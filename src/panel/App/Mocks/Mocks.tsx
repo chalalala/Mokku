@@ -11,6 +11,7 @@ import {
 } from "react-icons/md";
 import { useMockActions } from "./Mocks.action";
 import { Placeholder } from "../Blocks/Placeholder";
+import { ToggleAll } from "./ToggleAll/ToggleAll";
 
 interface GetSchemeProps {
 	toggleMock: (mock: IMockResponse) => void;
@@ -26,7 +27,7 @@ const getSchema = ({
 	editMock,
 }: GetSchemeProps): TableSchema<IMockResponse> => [
 	{
-		header: "",
+		header: <ToggleAll />,
 		content: (data) => (
 			<div
 				onClick={(event) => {
