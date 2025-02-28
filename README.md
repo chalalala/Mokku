@@ -1,15 +1,47 @@
 # Important Update
 
+### ✨ New features on this fork ✨
+
+-  Import/export mocks
+-  Toggle all mocks
+
+**❓ Migrate data to this version of extension?**
+
+New install of this version might not include the old data from the original Mokku extension.
+
+To migrate the data, you need to open inspect on the original Mokku extension and run the following code in the console to export the data to a file:
+
+```js
+const data = await chrome.storage.local.get("mokku.extension.main.db");
+const mocks = data["mokku.extension.main.db"].mocks;
+const blob = new Blob([JSON.stringify(mocks)], {
+	type: "application/json",
+});
+const link = document.createElement("a");
+const url = URL.createObjectURL(blob);
+
+link.href = url;
+link.download = "mokku.json";
+link.click();
+
+URL.revokeObjectURL(url);
+```
+
+Then you can use the import feature of this version to import the data.
+
+.❀。• *₊°。 ❀°。.❀。• *₊°。 ❀°。.❀。• *₊°。 ❀°。.❀。• *₊°。 ❀°。.❀。• *₊°。 ❀°。.❀。• *₊°。 ❀°。
+
 ### Mokku is changing
+
 Mokku is in transiton form Panel based extention to full page dashboard. For more better ease of use and more features.
 
 ### GraphQL
+
 GraphQL support is next in the list.
 
 ### Premium Version
+
 Ads free and exclusive features.
-
-
 
 # Mokku
 
@@ -28,7 +60,6 @@ Developing and maintaing the extenstion requires quite an effort! Cosnider suppo
 <a href="https://www.buymeacoffee.com/mukuljainx" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 **UPI Number:** 811721108 (this is not a mobile number but a UPI number)
-
 
 ### About
 
@@ -63,12 +94,12 @@ Mokku does not collect or ask for any personal information, though it will store
 
 ### Prerequisites
 
-- [node + npm](https://nodejs.org/) (Current Version)
+-  [node + npm](https://nodejs.org/) (Current Version)
 
 ### Project Structure
 
-- dist: Chrome Extension directory
-- dist/js: Generated JavaScript files
+-  dist: Chrome Extension directory
+-  dist/js: Generated JavaScript files
 
 ### Setup
 
