@@ -93,7 +93,7 @@ export const TableWrapper = <T extends unknown & { id: string | number }>({
 			withColumnBorders
 			style={{ position: "relative" }}
 		>
-			<thead>{ths}</thead>
+			<thead style={{ position: "relative", zIndex: 1 }}>{ths}</thead>
 			<tbody>{rows}</tbody>
 		</Table>
 	);
