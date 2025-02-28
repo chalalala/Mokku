@@ -7,81 +7,88 @@ import { useChromeStore, useChromeStoreState } from "../store/useMockStore";
 import { IMockResponse } from "../types/mock";
 
 const useMockStoreSelector = (state: useChromeStoreState) => ({
-  store: state.store,
-  setStoreProperties: state.setStoreProperties,
-  setSelectedMock: state.setSelectedMock,
+	store: state.store,
+	setStoreProperties: state.setStoreProperties,
+	setSelectedMock: state.setSelectedMock,
 });
 
 export const useMockActions = () => {
-  const { store, setSelectedMock, setStoreProperties } = useChromeStore(
-    useMockStoreSelector,
-    shallow,
-  );
-  const tab = useGlobalStore((state) => state.meta.tab);
+	const { store, setSelectedMock, setStoreProperties } = useChromeStore(
+		useMockStoreSelector,
+		shallow
+	);
+	const tab = useGlobalStore((state) => state.meta.tab);
 
-  const toggleMock = useCallback(
-    (mockToBeUpdated: IMockResponse) => {
-      const updatedStore = storeActions.updateMocks(store, mockToBeUpdated);
-      const mockStatus = mockToBeUpdated.active ? "is enabled" : "is disabled";
-      storeActions
-        .updateStoreInDB(updatedStore)
-        .then(setStoreProperties)
-        .then(() => {
-          storeActions.refreshContentStore(tab.id);
-          notifications.show({
-            title: `"${mockToBeUpdated.name}" is ${mockStatus}`,
-            message: `Mock ${mockStatus}`,
-          });
-        })
-        .catch(() => {
-          notifications.show({
-            title: "Cannot updated mock.",
-            message: "Something went wrong, unable to update mock.",
-            color: "red",
-          });
-        });
-    },
-    [store, setStoreProperties],
-  );
-  const deleteMock = useCallback(
-    (mockToBeDeleted: IMockResponse) => {
-      const updatedStore = storeActions.deleteMocks(store, mockToBeDeleted.id);
+	const toggleMock = useCallback(
+		(mockToBeUpdated: IMockResponse) => {
+			const updatedStore = storeActions.updateMocks(store, mockToBeUpdated);
+			const mockStatus = mockToBeUpdated.active
+				? "is enabled"
+				: "is disabled";
+			storeActions
+				.updateStoreInDB(updatedStore)
+				.then(setStoreProperties)
+				.then(() => {
+					storeActions.refreshContentStore(tab.id);
+					notifications.show({
+						title: `"${mockToBeUpdated.name}" is ${mockStatus}`,
+						message: `Mock ${mockStatus}`,
+					});
+				})
+				.catch(() => {
+					notifications.show({
+						title: "Cannot updated mock.",
+						message: "Something went wrong, unable to update mock.",
+						color: "red",
+					});
+				});
+		},
+		[store, setStoreProperties]
+	);
 
-      storeActions
-        .updateStoreInDB(updatedStore)
-        .then(setStoreProperties)
-        .then(() => {
-          storeActions.refreshContentStore(tab.id);
-          notifications.show({
-            title: `"${mockToBeDeleted.name}" mock deleted`,
-            message: `Mock "${mockToBeDeleted.name}" is deleted successfully.`,
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          notifications.show({
-            title: "Cannot delete mock.",
-            message:
-              "Something went wrong, unable to delete mock. Check console for error.",
-            color: "red",
-          });
-        });
-    },
-    [store, setStoreProperties],
-  );
-  const duplicateMock = useCallback(
-    (mock: IMockResponse) => {
-      setSelectedMock({ ...mock, id: undefined });
-    },
-    [setSelectedMock],
-  );
+	const deleteMock = useCallback(
+		(mockToBeDeleted: IMockResponse) => {
+			const updatedStore = storeActions.deleteMocks(
+				store,
+				mockToBeDeleted.id
+			);
 
-  const editMock = useCallback(
-    (mock: IMockResponse) => {
-      setSelectedMock(mock);
-    },
-    [setSelectedMock],
-  );
+			storeActions
+				.updateStoreInDB(updatedStore)
+				.then(setStoreProperties)
+				.then(() => {
+					storeActions.refreshContentStore(tab.id);
+					notifications.show({
+						title: `"${mockToBeDeleted.name}" mock deleted`,
+						message: `Mock "${mockToBeDeleted.name}" is deleted successfully.`,
+					});
+				})
+				.catch((error) => {
+					console.log(error);
+					notifications.show({
+						title: "Cannot delete mock.",
+						message:
+							"Something went wrong, unable to delete mock. Check console for error.",
+						color: "red",
+					});
+				});
+		},
+		[store, setStoreProperties]
+	);
 
-  return { toggleMock, deleteMock, duplicateMock, editMock };
+	const duplicateMock = useCallback(
+		(mock: IMockResponse) => {
+			setSelectedMock({ ...mock, id: undefined });
+		},
+		[setSelectedMock]
+	);
+
+	const editMock = useCallback(
+		(mock: IMockResponse) => {
+			setSelectedMock(mock);
+		},
+		[setSelectedMock]
+	);
+
+	return { toggleMock, deleteMock, duplicateMock, editMock };
 };
