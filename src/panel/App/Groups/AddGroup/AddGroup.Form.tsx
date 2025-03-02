@@ -69,7 +69,7 @@ export const AddGroupForm = ({
     },
   });
   const [selectedMocksIds, setSelectedMocksIds] = useState<string[]>(
-    selectedGroup.mocksIds || [],
+    selectedGroup.mocksIds || []
   );
 
   const isNewMock = !selectedGroup.id;
@@ -87,6 +87,8 @@ export const AddGroupForm = ({
     if (!values.id) {
       values.id = uuidv4();
     }
+
+    values.mocksIds = selectedMocksIds;
 
     const updatedStore = isNewMock
       ? storeActions.addGroups(store, values)
