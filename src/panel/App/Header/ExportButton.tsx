@@ -1,19 +1,17 @@
 import React from "react";
 import { TbFileExport } from "react-icons/tb";
 import { ActionIcon } from "@mantine/core";
-import { useChromeStore, useMockStoreSelector } from "../store";
-import { shallow } from "zustand/shallow";
+import { useMocksSelectionStore } from "../store/useMocksSelectionStore";
 
 export const ExportButton = () => {
-	const { store } = useChromeStore(useMockStoreSelector, shallow);
-	const mocks = store.mocks;
+	const { selectedMocksForAction } = useMocksSelectionStore();
 
 	const exportMocks = () => {
-		if (!mocks) {
+		if (!selectedMocksForAction) {
 			return;
 		}
 
-		const blob = new Blob([JSON.stringify(mocks)], {
+		const blob = new Blob([JSON.stringify(selectedMocksForAction)], {
 			type: "application/json",
 		});
 		const link = document.createElement("a");
@@ -31,7 +29,7 @@ export const ExportButton = () => {
 			variant="outline"
 			color={"blue"}
 			onClick={exportMocks}
-			title="Export Mocks"
+			title={`Export ${selectedMocksForAction.length} Selected Mocks`}
 		>
 			<TbFileExport />
 		</ActionIcon>

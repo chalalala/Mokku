@@ -43,6 +43,7 @@ export const useMockActions = () => {
     },
     [store, setStoreProperties],
   );
+
   const deleteMock = useCallback(
     (mockToBeDeleted: IMockResponse) => {
       const updatedStore = storeActions.deleteMocks(store, mockToBeDeleted.id);
@@ -69,6 +70,7 @@ export const useMockActions = () => {
     },
     [store, setStoreProperties],
   );
+
   const duplicateMock = useCallback(
     (mock: IMockResponse) => {
       setSelectedMock({ ...mock, id: undefined });
