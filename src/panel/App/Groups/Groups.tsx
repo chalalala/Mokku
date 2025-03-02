@@ -121,12 +121,16 @@ const getSchema = ({
 export const Groups = () => {
   const { store, selectedGroup, setSelectedGroup } = useChromeStore(
     useMockStoreSelector,
-    shallow,
+    shallow
   );
   const search = useGlobalStore((state) => state.search).toLowerCase();
 
-  const { deleteGroup, duplicateGroup, toggleGroup, editGroup } =
-    useGroupActions();
+  const {
+    deleteGroup,
+    duplicateGroup,
+    toggleGroup,
+    editGroup,
+  } = useGroupActions();
 
   const schema = useMemo(() => {
     const activeMocksIds = store.mocks
@@ -149,13 +153,14 @@ export const Groups = () => {
   const filteredGroups = useMemo(
     () =>
       store.groups
-        .sort((a, b) => a.name.localeCompare(b.name))
+
         .filter(
           (group) =>
             (group?.name || "").toLowerCase().includes(search) ||
-            (group?.description || "").toLowerCase().includes(search),
-        ),
-    [store.groups, search],
+            (group?.description || "").toLowerCase().includes(search)
+        )
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    [store.groups, search]
   );
 
   if (store.groups.length === 0) {

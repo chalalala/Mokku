@@ -95,7 +95,17 @@ export const AddGroupListMocks = ({
   });
 
   const filteredMocks = useMemo(() => {
-    const sortedMocks = store.mocks.sort((a, b) => {
+    const filtered = store.mocks.filter(
+      (mock) =>
+        (mock?.name || "").toLowerCase().includes(search.toLocaleLowerCase()) ||
+        (mock?.url || "").toLowerCase().includes(search.toLocaleLowerCase()) ||
+        (mock?.method || "")
+          .toLowerCase()
+          .includes(search.toLocaleLowerCase()) ||
+        (mock?.status || "").toString().includes(search.toLocaleLowerCase())
+    );
+
+    const sortedMocks = filtered.sort((a, b) => {
       if (selectedMocks.includes(a.id) && !selectedMocks.includes(b.id)) {
         return -1;
       }
@@ -106,13 +116,7 @@ export const AddGroupListMocks = ({
       return a.name.localeCompare(b.name);
     });
 
-    return sortedMocks.filter(
-      (mock) =>
-        (mock?.name || "").toLowerCase().includes(search) ||
-        (mock?.url || "").toLowerCase().includes(search) ||
-        (mock?.method || "").toLowerCase().includes(search) ||
-        (mock?.status || "").toString().includes(search)
-    );
+    return sortedMocks;
   }, [store.mocks, selectedMocks, search]);
 
   return (
