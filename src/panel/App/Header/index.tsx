@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { shallow } from "zustand/shallow";
-import { Tabs, Flex, createStyles, Input, Button } from "@mantine/core";
+import { Tabs, Flex, Input, Button } from "@mantine/core";
 import { MdAdd } from "react-icons/md";
 import { TbSearch } from "react-icons/tb";
 import {
@@ -8,6 +8,7 @@ import {
 	useGlobalStore,
 	ViewEnum,
 	useGlobalStoreState,
+	useMockStoreSelector,
 } from "../store";
 import { ThemeButton } from "./ThemeButton";
 import { RefreshButton } from "./RefreshButton";
@@ -30,7 +31,9 @@ export const Header = () => {
 		viewSelector,
 		shallow
 	);
-	const setSelectedMock = useChromeStore((state) => state.setSelectedMock);
+	const { setSelectedMock, setSelectedGroup } = useChromeStore(
+		useMockStoreSelector
+	);
 	const [showSupportUs, setShowSupportUs] = useState(false);
 
 	return (
@@ -43,16 +46,28 @@ export const Header = () => {
 				>
 					<Flex align="center">
 						<Tabs.Tab value={ViewEnum.MOCKS}>Mocks</Tabs.Tab>
+						<Tabs.Tab value={ViewEnum.GROUPS}>Groups</Tabs.Tab>
 						<Tabs.Tab value={ViewEnum.LOGS}>Logs</Tabs.Tab>
 						<Flex align="center" gap={8}>
-							<Button
-								onClick={() => setSelectedMock({})}
-								leftIcon={<MdAdd />}
-								size="xs"
-								variant="subtle"
-							>
-								Add Mock
-							</Button>
+							{view === ViewEnum.GROUPS ? (
+								<Button
+									onClick={() => setSelectedGroup({})}
+									leftIcon={<MdAdd />}
+									size="xs"
+									variant="subtle"
+								>
+									Add Group
+								</Button>
+							) : (
+								<Button
+									onClick={() => setSelectedMock({})}
+									leftIcon={<MdAdd />}
+									size="xs"
+									variant="subtle"
+								>
+									Add Mock
+								</Button>
+							)}
 							<Input
 								icon={<TbSearch />}
 								placeholder="Search..."
@@ -72,8 +87,12 @@ export const Header = () => {
 						>
 							Support Mokku
 						</Button>
-						<ExportButton />
-						<ImportButton />
+						{view === ViewEnum.MOCKS ? (
+							<>
+								<ExportButton />
+								<ImportButton />
+							</>
+						) : null}
 						<ThemeButton />
 						<RefreshButton />
 						<SwitchButton />

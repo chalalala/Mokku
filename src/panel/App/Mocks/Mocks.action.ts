@@ -15,7 +15,7 @@ const useMockStoreSelector = (state: useChromeStoreState) => ({
 export const useMockActions = () => {
   const { store, setSelectedMock, setStoreProperties } = useChromeStore(
     useMockStoreSelector,
-    shallow,
+    shallow
   );
   const tab = useGlobalStore((state) => state.meta.tab);
 
@@ -41,7 +41,7 @@ export const useMockActions = () => {
           });
         });
     },
-    [store, setStoreProperties],
+    [store, setStoreProperties]
   );
 
   const deleteMock = useCallback(
@@ -68,21 +68,21 @@ export const useMockActions = () => {
           });
         });
     },
-    [store, setStoreProperties],
+    [store, setStoreProperties]
   );
 
   const duplicateMock = useCallback(
     (mock: IMockResponse) => {
       setSelectedMock({ ...mock, id: undefined });
     },
-    [setSelectedMock],
+    [setSelectedMock]
   );
 
   const editMock = useCallback(
     (mock: IMockResponse) => {
       setSelectedMock(mock);
     },
-    [setSelectedMock],
+    [setSelectedMock]
   );
 
   return { toggleMock, deleteMock, duplicateMock, editMock };
