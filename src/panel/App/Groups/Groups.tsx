@@ -167,7 +167,7 @@ export const Groups = () => {
     return (
       <Placeholder
         title="No Groups created yet."
-        description="Create a mock from scratch or mock a log from logs."
+        description='Select "+ Add Group" to create a new group.'
       />
     );
   }
@@ -176,7 +176,7 @@ export const Groups = () => {
     return (
       <Placeholder
         title="No matched group."
-        description="No group is matching the current search, you can search by name, url, method or status."
+        description="No group is matching the current search, you can search by name or description."
       />
     );
   }
