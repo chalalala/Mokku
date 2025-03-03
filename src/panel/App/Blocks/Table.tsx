@@ -43,7 +43,11 @@ const useStyles = createStyles((theme) => ({
       theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
     position: "sticky",
     top: 0,
-    borderBottom: "1px solid black",
+    borderBottomWidth: "2px !important",
+  },
+  cell: {
+    borderTop: 0,
+    borderBottom: `1px solid ${theme.colors.gray[3]}`,
   },
 }));
 
@@ -80,7 +84,9 @@ export const TableWrapper = <T extends unknown & { id: string | number }>({
       }`}
     >
       {schema.map(({ content }, index) => (
-        <td key={index}>{content(row)}</td>
+        <td className={classes.cell} key={index}>
+          {content(row)}
+        </td>
       ))}
     </tr>
   ));
