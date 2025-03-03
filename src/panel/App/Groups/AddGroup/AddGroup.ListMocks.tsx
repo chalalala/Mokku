@@ -105,18 +105,20 @@ export const AddGroupListMocks = ({
         (mock?.status || "").toString().includes(search.toLocaleLowerCase())
     );
 
-    const sortedMocks = filtered.sort((a, b) => {
+    filtered.sort((a, b) => {
       if (selectedMocks.includes(a.id) && !selectedMocks.includes(b.id)) {
         return -1;
       }
+      
       if (!selectedMocks.includes(a.id) && selectedMocks.includes(b.id)) {
         return 1;
       }
 
-      return a.name.localeCompare(b.name);
+      return 0;
+      // return a.name.localeCompare(b.name);
     });
 
-    return sortedMocks;
+    return filtered;
   }, [store.mocks, selectedMocks, search]);
 
   return (
