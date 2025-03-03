@@ -87,7 +87,7 @@ export const TableWrapper = <T extends unknown & { id: string | number }>({
       }}
       className={`${
         isSelectedRow(row.id) ? selectedRowClass || classes.selectedRow : ""
-      } ${classes.rows}`}
+      } ${onRowClick ? classes.rows : ""}`}
     >
       {schema.map(({ content }, index) => (
         <td key={index}>{content(row)}</td>
