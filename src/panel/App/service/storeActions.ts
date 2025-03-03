@@ -1,12 +1,7 @@
 import { match as getMatcher } from "path-to-regexp";
-import {
-  IDynamicURLMap,
-  IMockResponse,
-  IMockResponseRaw,
-  IStore,
-  IURLMap,
-} from "@mokku/types";
+import { IDynamicURLMap, IMockResponse, IStore, IURLMap } from "@mokku/types";
 import messageService from "./messageService";
+import { IMockGroup } from "../types/mockGroup";
 
 const getNetworkMethodMap = () => ({
   GET: [],
@@ -22,6 +17,7 @@ export const getDefaultStore = (): IStore => ({
   theme: "light",
   active: false,
   mocks: [],
+  groups: [],
   totalMocksCreated: 0,
   collections: {},
   activityInfo: {
@@ -186,6 +182,76 @@ export const deleteMocks = (
   return store;
 };
 
+export const addGroups = (
+  oldStore: IStore,
+  dirtyNewGroup: IMockGroup | IMockGroup[],
+) => {
+  const store = { ...oldStore };
+
+  // standardize mock
+  const newGroups = Array.isArray(dirtyNewGroup)
+    ? dirtyNewGroup
+    : [dirtyNewGroup];
+
+  store.groups = [...store.groups, ...newGroups];
+
+  return store;
+};
+
+export const updateGroups = (
+  oldStore: IStore,
+  dirtyNewGroup: IMockGroup | Array<IMockGroup>,
+) => {
+  const store = { ...oldStore };
+
+  // standardize mock
+  const newMocks = Array.isArray(dirtyNewGroup)
+    ? dirtyNewGroup
+    : [dirtyNewGroup];
+
+  const newGroupsMap: Record<string, IMockGroup> = {};
+
+  newMocks.forEach((group) => {
+    newGroupsMap[group.id] = group;
+  });
+
+  const newStoreGroups = store.groups.map((storeGroup) => {
+    const groupToBeUpdated = newGroupsMap[storeGroup.id];
+    if (groupToBeUpdated) {
+      return { ...storeGroup, ...groupToBeUpdated };
+    } else {
+      return storeGroup;
+    }
+  });
+
+  store.groups = newStoreGroups;
+
+  return store;
+};
+
+export const deleteGroups = (
+  draftStore: IStore,
+  dirtyGroupId: string | string[],
+) => {
+  const groupIdsSet = Array.isArray(dirtyGroupId)
+    ? new Set(dirtyGroupId)
+    : new Set([dirtyGroupId]);
+
+  const groups = draftStore.groups.filter((mock) => {
+    if (groupIdsSet.has(mock.id)) {
+      return false;
+    }
+    return true;
+  });
+
+  const store = {
+    ...draftStore,
+    groups,
+  };
+
+  return store;
+};
+
 export const refreshContentStore = (tabId?: number) => {
   messageService.send(
     {
@@ -202,6 +268,9 @@ export const storeActions = {
   deleteMocks,
   updateMocks,
   addMocks,
+  addGroups,
+  deleteGroups,
+  updateGroups,
   getURLMapWithStore,
   updateStoreInDB,
   getStore,

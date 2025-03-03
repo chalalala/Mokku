@@ -1,3 +1,5 @@
+import { IMockGroup } from "./mockGroup";
+
 export type IMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
 export enum MethodEnum {
@@ -62,6 +64,7 @@ export interface IStore {
   active: boolean;
   theme: "dark" | "light";
   mocks: IMockResponse[];
+  groups: IMockGroup[];
   totalMocksCreated: number;
   activityInfo: {
     promoted: boolean;

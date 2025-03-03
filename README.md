@@ -2,8 +2,9 @@
 
 ### ✨ New features on this fork ✨
 
--  Import/export mocks
--  Toggle all mocks
+- Import/export mocks
+- Toggle all mocks
+- Group of mocks
 
 **❓ Migrate data to this version of extension?**
 
@@ -15,7 +16,7 @@ To migrate the data, you need to open inspect on the original Mokku extension an
 const data = await chrome.storage.local.get("mokku.extension.main.db");
 const mocks = data["mokku.extension.main.db"].mocks;
 const blob = new Blob([JSON.stringify(mocks)], {
-	type: "application/json",
+  type: "application/json",
 });
 const link = document.createElement("a");
 const url = URL.createObjectURL(blob);
@@ -94,12 +95,12 @@ Mokku does not collect or ask for any personal information, though it will store
 
 ### Prerequisites
 
--  [node + npm](https://nodejs.org/) (Current Version)
+- [node + npm](https://nodejs.org/) (Current Version)
 
 ### Project Structure
 
--  dist: Chrome Extension directory
--  dist/js: Generated JavaScript files
+- dist: Chrome Extension directory
+- dist/js: Generated JavaScript files
 
 ### Setup
 

@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useLogStore, useChromeStore } from "../store";
+import { useLogStore, useChromeStore, useMockStoreSelector } from "../store";
 import { AddMock } from "../Mocks/AddMock/AddMock";
 import { LogDetails } from "../Logs/LogDetails/LogDetails";
 import { Flex } from "@mantine/core";
+import { AddGroup } from "../Groups/AddGroup/AddGroup";
 
 enum ModalType {
   Mock = "MOCK",
+  Group = "GROUP",
   Log = "LOG",
 }
 
 export const Modal = () => {
-  const selectedMock = useChromeStore((state) => state.selectedMock);
+  const { selectedMock, selectedGroup } = useChromeStore(useMockStoreSelector);
   const selectedLog = useLogStore((state) => state.selectedLog);
   const setSelectedLog = useLogStore((state) => state.setSelectedLog);
   const [order, setOrder] = useState<ModalType[]>([]);
@@ -34,16 +36,22 @@ export const Modal = () => {
   }, [selectedMock]);
 
   useEffect(() => {
+    handleModalInstance(ModalType.Group, !!selectedGroup);
+  }, [selectedGroup]);
+
+  useEffect(() => {
     handleModalInstance(ModalType.Log, !!selectedLog);
   }, [selectedLog]);
 
   const Mock = selectedMock ? <AddMock /> : null;
+  const Group = selectedGroup ? <AddGroup /> : null;
   const Log = selectedLog ? (
     <LogDetails log={selectedLog} onClose={() => setSelectedLog()} />
   ) : null;
 
   const componentOrderMap = {
     MOCK: Mock,
+    GROUP: Group,
     LOG: Log,
   };
 

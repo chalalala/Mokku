@@ -15,6 +15,7 @@ import {
 import { Notifications } from "@mantine/notifications";
 import { Modal } from "./Blocks/Modal";
 import { Header } from "./Header";
+import { Groups } from "./Groups/Groups";
 
 export const App = (props: useGlobalStoreState["meta"]) => {
   const state = usePanelListener(props);
@@ -51,6 +52,9 @@ export const App = (props: useGlobalStoreState["meta"]) => {
         <div style={{ overflow: "auto", flexGrow: 2 }}>
           <Show if={view === ViewEnum.MOCKS}>
             <Mocks />
+          </Show>
+          <Show if={view === ViewEnum.GROUPS}>
+            <Groups />
           </Show>
           <Show if={view === ViewEnum.LOGS}>
             <Logs />
