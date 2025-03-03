@@ -1,4 +1,4 @@
-import { Button, Input, Switch } from "@mantine/core";
+import { Button, createStyles, Input, Switch } from "@mantine/core";
 import React, { useMemo, useState } from "react";
 import { TbSearch } from "react-icons/tb";
 import { TableSchema, TableWrapper } from "../../Blocks/Table";
@@ -79,6 +79,25 @@ const getSchema = ({
   },
 ];
 
+const useStyles = createStyles((theme) => ({
+  selectedRow: {
+    background: `${theme.colors[theme.primaryColor][1]} !important`,
+    ...(theme.colorScheme === "dark"
+      ? {
+          color: theme.black,
+        }
+      : {}),
+    "&:hover": {
+      background: `${theme.colors[theme.primaryColor][1]} !important`,
+      ...(theme.colorScheme === "dark"
+        ? {
+            color: theme.black,
+          }
+        : {}),
+    },
+  },
+}));
+
 export const AddGroupListMocks = ({
   store,
   selectedMocks,
@@ -86,6 +105,7 @@ export const AddGroupListMocks = ({
   onRemoveMock,
   toggleMock,
 }: Props) => {
+  const { classes } = useStyles();
   const [search, setSearch] = useState("");
   const schema = getSchema({
     selectedMocks,
@@ -109,7 +129,7 @@ export const AddGroupListMocks = ({
       if (selectedMocks.includes(a.id) && !selectedMocks.includes(b.id)) {
         return -1;
       }
-      
+
       if (!selectedMocks.includes(a.id) && selectedMocks.includes(b.id)) {
         return 1;
       }
@@ -130,7 +150,12 @@ export const AddGroupListMocks = ({
         defaultValue={search}
         onChange={(event) => setSearch(event.target.value)}
       />
-      <TableWrapper data={filteredMocks} schema={schema} />
+      <TableWrapper
+        data={filteredMocks}
+        schema={schema}
+        selectedRowId={selectedMocks}
+        selectedRowClass={classes.selectedRow}
+      />
     </>
   );
 };
