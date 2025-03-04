@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { ActionIcon, Flex, Switch } from "@mantine/core";
+import React, { useCallback, useMemo } from "react";
+import { ActionIcon, Checkbox, Flex, Switch } from "@mantine/core";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
 import { IMockGroup } from "@mokku/types";
 import { useGlobalStore, useChromeStore, useMockStoreSelector } from "../store";
@@ -11,51 +11,59 @@ import {
 } from "react-icons/md";
 import { useGroupActions } from "./Groups.action";
 import { Placeholder } from "../Blocks/Placeholder";
+import { useSelectionStore } from "../store/useMocksSelectionStore";
 
 interface GetSchemeProps {
+  isSelectedAll: boolean;
+  selectedGroups: IMockGroup[];
   isGroupSelected: (group: IMockGroup) => boolean;
   toggleGroup: (group: IMockGroup, isActive: boolean) => void;
   deleteGroup: (group: IMockGroup) => void;
   editGroup: (group: IMockGroup) => void;
   duplicateGroup: (group: IMockGroup) => void;
+  toggleGroupSelection: (group: IMockGroup, isChecked: boolean) => void;
+  toggleAllGroupSelection: (isChecked: boolean) => void;
 }
 
 const getSchema = ({
+  isSelectedAll,
+  selectedGroups,
   isGroupSelected,
   toggleGroup,
   deleteGroup,
   duplicateGroup,
   editGroup,
+  toggleGroupSelection,
+  toggleAllGroupSelection,
 }: GetSchemeProps): TableSchema<IMockGroup> => [
-  // {
-  // 	header: <Checkbox />,
-  // 	content: (data) => (
-  // 		<div
-  // 			onClick={(event) => {
-  // 				// this was not working with switch for some unknown reason
-  // 				event.stopPropagation();
-  // 			}}
-  // 			style={{ cursor: "pointer" }}
-  // 		>
-  // 			<Checkbox
-  // 				checked={data.active}
-  // 				onChange={(x) => {
-  // 					toggleMock({ ...data, active: x.target.checked });
-  // 				}}
-  // 			/>
-  // 		</div>
-  // 	),
-  // 	width: 60,
-  // },
+  {
+    header: (
+      <Checkbox
+        checked={isSelectedAll}
+        onChange={(event) => {
+          toggleAllGroupSelection(event.target.checked);
+        }}
+      />
+    ),
+    content: (data) => (
+      <Checkbox
+        checked={selectedGroups.some((item) => item.id === data.id)}
+        onChange={(event) => {
+          toggleGroupSelection(data, event.target.checked);
+        }}
+      />
+    ),
+    width: 60,
+  },
   {
     header: "",
     content: (data) => (
       <div
+        role="none"
         onClick={(event) => {
           // this was not working with switch for some unknown reason
           event.stopPropagation();
         }}
-        style={{ cursor: "pointer" }}
       >
         <Switch
           checked={isGroupSelected(data)}
@@ -124,31 +132,71 @@ export const Groups = () => {
     shallow
   );
   const search = useGlobalStore((state) => state.search).toLowerCase();
-
   const {
     deleteGroup,
     duplicateGroup,
     toggleGroup,
     editGroup,
   } = useGroupActions();
+  const { selectedGroups, setSelectedGroups } = useSelectionStore();
+
+  const isSelectedAll = useMemo(
+    () => selectedGroups.length === store.groups.length,
+    [selectedGroups, store.groups]
+  );
+
+  const toggleGroupSelection = useCallback(
+    (group: IMockGroup, isChecked: boolean) => {
+      if (isChecked) {
+        setSelectedGroups([...selectedGroups, group]);
+      } else {
+        setSelectedGroups(
+          selectedGroups.filter((item) => item.id !== group.id)
+        );
+      }
+    },
+    [selectedGroups]
+  );
+
+  const toggleAllGroupSelection = useCallback(
+    (isChecked: boolean) => {
+      setSelectedGroups(isChecked ? store.groups : []);
+    },
+    [store.groups]
+  );
+
+  const isGroupSelected = useCallback(
+    (group: IMockGroup) => {
+      const activeMocksIds = store.mocks
+        .filter((mock) => mock.active)
+        .map((mock) => mock.id);
+
+      return group.mocksIds.every((mockId) => activeMocksIds.includes(mockId));
+    },
+    [store.mocks]
+  );
 
   const schema = useMemo(() => {
-    const activeMocksIds = store.mocks
-      .filter((mock) => mock.active)
-      .map((mock) => mock.id);
-
-    const isGroupSelected = (group: IMockGroup) => {
-      return group.mocksIds.every((mockId) => activeMocksIds.includes(mockId));
-    };
-
     return getSchema({
       isGroupSelected,
       toggleGroup,
       deleteGroup,
       duplicateGroup,
       editGroup,
+      toggleGroupSelection,
+      toggleAllGroupSelection,
+      isSelectedAll,
+      selectedGroups,
     });
-  }, [store.mocks, deleteGroup, duplicateGroup, editGroup, toggleGroup]);
+  }, [
+    selectedGroups,
+    isSelectedAll,
+    isGroupSelected,
+    deleteGroup,
+    duplicateGroup,
+    editGroup,
+    toggleGroup,
+  ]);
 
   const filteredGroups = useMemo(
     () =>

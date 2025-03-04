@@ -4,70 +4,95 @@ import { ActionIcon } from "@mantine/core";
 import { useChromeStore, useGlobalStore, useMockStoreSelector } from "../store";
 import { shallow } from "zustand/shallow";
 import { storeActions } from "../service/storeActions";
-import { IMockResponse } from "@mokku/types";
+import { IMockGroup, IMockResponse } from "@mokku/types";
 import { notifications } from "@mantine/notifications";
 
+interface IImportData {
+  mocks: IMockResponse[];
+  groups?: IMockGroup[];
+}
+
+const isGroups = (items: IMockGroup | IMockResponse): items is IMockGroup => {
+  // It's groups if having mocksIds
+  if (items?.[0].mocksIds) {
+    return true;
+  }
+
+  // Otherwise it's mocks
+  return false;
+};
+
 export const ImportButton = () => {
-	const { store, setStoreProperties, setSelectedMock } = useChromeStore(
-		useMockStoreSelector,
-		shallow
-	);
-	const tab = useGlobalStore((state) => state.meta.tab);
+  const { store, setStoreProperties, setSelectedMock } = useChromeStore(
+    useMockStoreSelector,
+    shallow
+  );
+  const tab = useGlobalStore((state) => state.meta.tab);
 
-	const importMocks = (eventInput: ChangeEvent<HTMLInputElement>) => {
-		const file = eventInput.target.files?.[0];
-		const reader = new FileReader();
+  const importData = (eventInput: ChangeEvent<HTMLInputElement>) => {
+    const file = eventInput.target.files?.[0];
+    const reader = new FileReader();
 
-		reader.onload = async (event) => {
-			const content = reader.result;
+    reader.onload = async (event) => {
+      const content = reader.result;
+      let isImportingGroups = false;
 
-			if (typeof content !== "string") {
-				return;
-			}
+      if (typeof content !== "string") {
+        return;
+      }
 
-			try {
-				const parsedContent: IMockResponse[] = JSON.parse(content);
-				const updatedStore = storeActions.addMocks(store, parsedContent);
-				const properties = await storeActions.updateStoreInDB(updatedStore);
-				setStoreProperties(properties);
-				storeActions.refreshContentStore(tab.id);
-				setSelectedMock();
+      try {
+        const parsedContent: IImportData = JSON.parse(content);
+        const mocks = parsedContent.mocks;
+        const groups = parsedContent.groups;
 
-				notifications.show({
-					title: "Imported successfully.",
-					message: `Mocks has been imported.`,
-				});
+        let updatedStore = store;
 
-				eventInput.target.value = "";
-			} catch (error) {
-				notifications.show({
-					title: `Cannot import mocks.`,
-					message: `Something went wrong, unable to import mocks.`,
-					color: "red",
-				});
-			}
-		};
+        updatedStore = storeActions.addMocks(updatedStore, mocks, true);
 
-		if (file) {
-			reader.readAsText(file);
-		}
-	};
+        if (groups) {
+          updatedStore = storeActions.addGroups(updatedStore, groups, true);
+          isImportingGroups = true;
+        }
 
-	return (
-		<ActionIcon
-			component="label"
-			variant="outline"
-			color={"blue"}
-			title="Import Mocks"
-		>
-			<TbDatabaseImport />
-			<input
-				type="file"
-				accept=".json"
-				aria-hidden="true"
-				hidden
-				onChange={importMocks}
-			/>
-		</ActionIcon>
-	);
+        const properties = await storeActions.updateStoreInDB(updatedStore);
+        setStoreProperties(properties);
+        storeActions.refreshContentStore(tab.id);
+        setSelectedMock();
+
+        notifications.show({
+          title: "Imported successfully.",
+          message: `${
+            isImportingGroups ? "Groups" : "Mocks"
+          } has been imported.`,
+        });
+
+        eventInput.target.value = "";
+      } catch (error) {
+        notifications.show({
+          title: `Cannot import ${isImportingGroups ? "groups" : "mocks"}.`,
+          message: `Something went wrong, unable to import ${
+            isImportingGroups ? "groups" : "mocks"
+          }.`,
+          color: "red",
+        });
+      }
+    };
+
+    if (file) {
+      reader.readAsText(file);
+    }
+  };
+
+  return (
+    <ActionIcon
+      component="label"
+      variant="outline"
+      color={"blue"}
+      title="Import Mocks / Groups"
+    >
+      <TbDatabaseImport />
+      <input type="file" accept=".json" hidden onChange={importData} />
+    </ActionIcon>
+  );
 };

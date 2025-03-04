@@ -1,14 +1,28 @@
-import { IMockResponse } from "@mokku/types";
+import { IMockGroup, IMockResponse } from "@mokku/types";
 import { create } from "zustand";
 
-export interface State {
-	selectedMocksForAction: IMockResponse[];
-	setSelectedMocksForAction: (mocks: IMockResponse[]) => void;
+interface State {
+  selectedMocks: IMockResponse[];
+  setSelectedMocks: (selectedMocks: IMockResponse[]) => void;
+
+  selectedGroups: IMockGroup[];
+  setSelectedGroups: (selectedGroups: IMockGroup[]) => void;
+
+  resetSelection: () => void;
 }
 
-export const useMocksSelectionStore = create<State>((set) => ({
-	selectedMocksForAction: [],
-	setSelectedMocksForAction: (mocks) => {
-		set({ selectedMocksForAction: mocks });
-	},
+export const useSelectionStore = create<State>((set) => ({
+  selectedMocks: [],
+  setSelectedMocks: (selectedMocks) => {
+    set({ selectedMocks });
+  },
+
+  selectedGroups: [],
+  setSelectedGroups: (selectedGroups) => {
+    set({ selectedGroups });
+  },
+
+  resetSelection: () => {
+    set({ selectedMocks: [], selectedGroups: [] });
+  },
 }));

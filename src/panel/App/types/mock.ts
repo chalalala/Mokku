@@ -39,7 +39,7 @@ export interface ILog {
 }
 
 export interface IMockResponse {
-  method: MethodEnum;
+  method: `${MethodEnum}`;
   createdOn: number;
   url: string;
   status: number;
@@ -92,7 +92,7 @@ export interface IURLMap {
 export interface IDynamicURLMap {
   [urlLength: number]: Array<{
     match: (
-      s: string,
+      s: string
     ) => boolean | { path: string; params: Record<string, string> };
     method: string;
     getterKey: string;
