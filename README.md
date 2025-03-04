@@ -15,7 +15,7 @@ To migrate the data, you need to open inspect on the original Mokku extension an
 ```js
 const data = await chrome.storage.local.get("mokku.extension.main.db");
 const mocks = data["mokku.extension.main.db"].mocks;
-const blob = new Blob([JSON.stringify(mocks)], {
+const blob = new Blob([JSON.stringify({ mocks })], {
   type: "application/json",
 });
 const link = document.createElement("a");
