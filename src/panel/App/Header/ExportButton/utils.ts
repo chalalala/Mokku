@@ -1,23 +1,26 @@
 import { IMockGroup, IMockResponse } from "@mokku/types";
-import { isEmpty } from "lodash";
 
-interface IExportData {
+interface IExportParams {
   selectedMocks?: IMockResponse[];
   selectedGroups?: IMockGroup[];
   mocks?: IMockResponse[];
 }
 
+interface IExportData {
+  groups?: IMockGroup[];
+  mocks?: IMockResponse[];
+}
+
 export const getExportData = ({
   mocks,
-  selectedGroups,
-  selectedMocks,
-}: IExportData): IExportData => {
-  let exportedData = {};
+  selectedGroups = [],
+  selectedMocks = [],
+}: IExportParams) => {
+  let exportedData: IExportData = {};
+  const exportingMocks = new Set<IMockResponse>();
 
   // Export selected groups
   if (selectedGroups?.length) {
-    let exportingMocks = new Set<IMockResponse>();
-
     const mockObj = mocks.reduce((acc, mock) => {
       acc[mock.id] = mock;
       return acc;
@@ -28,25 +31,27 @@ export const getExportData = ({
         exportingMocks.add(mockObj[mockId]);
       }
     }
-
-    exportedData = {
-      mocks: [...exportingMocks],
-      groups: selectedGroups,
-    };
   }
+
   // Export selected mocks
-  else if (selectedMocks?.length) {
-    exportedData = { mocks: selectedMocks };
+  if (selectedMocks?.length) {
+    for (const selectedMock of selectedMocks) {
+      exportingMocks.add(selectedMock);
+    }
+  }
+
+  if (exportingMocks.size) {
+    exportedData.mocks = [...exportingMocks];
+  }
+
+  if (selectedGroups.length) {
+    exportedData.groups = selectedGroups;
   }
 
   return exportedData;
 };
 
 export const exportData = (exportData: IExportData) => {
-  if (isEmpty(exportData)) {
-    return;
-  }
-
   const blob = new Blob([JSON.stringify(exportData)], {
     type: "application/json",
   });

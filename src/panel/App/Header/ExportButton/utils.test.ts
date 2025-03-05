@@ -41,8 +41,18 @@ describe("getExportData", () => {
     expect(getExportData({})).toEqual({});
   });
 
-  it('should return object with "selectedMocks" key if mocks are selected', () => {
+  it('should return object with "mocks" key if mocks are selected', () => {
     expect(getExportData({ selectedMocks: [mock] })).toEqual({
+      mocks: [mock],
+    });
+  });
+
+  it("should keep unique mocks if duplicated mocks data", () => {
+    expect(
+      getExportData({
+        selectedMocks: [mock, mock],
+      })
+    ).toEqual({
       mocks: [mock],
     });
   });
@@ -51,11 +61,23 @@ describe("getExportData", () => {
     expect(
       getExportData({
         selectedGroups,
-        selectedMocks: [mock],
         mocks,
       })
     ).toEqual({
       mocks: [mock],
+      groups: selectedGroups,
+    });
+  });
+
+  it('should return object with "mocks" and "groups" keys if both mocks and groups are selected', () => {
+    expect(
+      getExportData({
+        selectedGroups,
+        selectedMocks: mocks,
+        mocks,
+      })
+    ).toEqual({
+      mocks: mocks,
       groups: selectedGroups,
     });
   });
@@ -75,18 +97,10 @@ describe("exportData", () => {
     window.URL = originalURL;
   });
 
-  it("should not invoke the below code if exported data is empty", () => {
-    (isEmpty as jest.Mock).mockReturnValue(true);
-
-    exportData({ selectedMocks: [], mocks: [] });
-
-    expect(window.URL.createObjectURL).not.toHaveBeenCalled();
-  });
-
-  it("should invoke export data if exported data is not empty", () => {
+  it("should invoke export data if exported data", () => {
     (isEmpty as jest.Mock).mockReturnValue(false);
 
-    exportData({ selectedMocks: [], mocks: [] });
+    exportData({ groups: [], mocks: [] });
 
     expect(window.URL.createObjectURL).toHaveBeenCalled();
   });

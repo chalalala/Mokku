@@ -28,6 +28,31 @@ const getSchema = ({
 }: GetSchemeProps): TableSchema<IMockResponse> => [
   {
     header: "",
+    content: (data) => {
+      const isSelected = selectedMocks.includes(data.id);
+      const onClick = isSelected
+        ? () => onRemoveMock(data.id)
+        : () => onAddMock(data.id);
+
+      return (
+        <Button
+          onClick={onClick}
+          styles={{
+            leftIcon: { marginRight: 4 },
+          }}
+          leftIcon={isSelected ? <MdRemove /> : <MdAdd />}
+          variant="subtle"
+          color={isSelected ? "red" : "blue"}
+          compact
+        >
+          {isSelected ? "Remove from group" : "Add to group"}
+        </Button>
+      );
+    },
+    width: 120,
+  },
+  {
+    header: "Is Active",
     content: (data) => (
       <Switch
         checked={data.active}
@@ -51,31 +76,6 @@ const getSchema = ({
     header: "URL",
     content: (data) => data.url,
     width: 240,
-  },
-  {
-    header: "",
-    content: (data) => {
-      const isSelected = selectedMocks.includes(data.id);
-      const onClick = isSelected
-        ? () => onRemoveMock(data.id)
-        : () => onAddMock(data.id);
-
-      return (
-        <Button
-          onClick={onClick}
-          styles={{
-            leftIcon: { marginRight: 4 },
-          }}
-          leftIcon={isSelected ? <MdRemove /> : <MdAdd />}
-          variant="subtle"
-          color={isSelected ? "red" : "blue"}
-          compact
-        >
-          {isSelected ? "Remove from group" : "Add to group"}
-        </Button>
-      );
-    },
-    width: 120,
   },
 ];
 
