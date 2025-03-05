@@ -2,7 +2,7 @@ import { IMockGroup, IMockResponse } from "@mokku/types";
 import { isEmpty } from "lodash";
 
 interface IExportData {
-  selectedMocks: IMockResponse[];
+  selectedMocks?: IMockResponse[];
   selectedGroups?: IMockGroup[];
   mocks?: IMockResponse[];
 }
@@ -11,7 +11,7 @@ export const getExportData = ({
   mocks,
   selectedGroups,
   selectedMocks,
-}: IExportData) => {
+}: IExportData): IExportData => {
   let exportedData = {};
 
   // Export selected groups
@@ -35,7 +35,7 @@ export const getExportData = ({
     };
   }
   // Export selected mocks
-  else if (selectedMocks.length) {
+  else if (selectedMocks?.length) {
     exportedData = { mocks: selectedMocks };
   }
 
@@ -43,13 +43,11 @@ export const getExportData = ({
 };
 
 export const exportData = (exportData: IExportData) => {
-  const data = getExportData(exportData);
-
-  if (isEmpty(data)) {
+  if (isEmpty(exportData)) {
     return;
   }
 
-  const blob = new Blob([JSON.stringify(data)], {
+  const blob = new Blob([JSON.stringify(exportData)], {
     type: "application/json",
   });
   const link = document.createElement("a");

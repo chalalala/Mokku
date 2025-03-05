@@ -38,7 +38,7 @@ describe("getExportData", () => {
   ];
 
   it("should return empty object if no mocks or groups are selected", () => {
-    expect(getExportData({ selectedMocks: [] })).toEqual({});
+    expect(getExportData({})).toEqual({});
   });
 
   it('should return object with "selectedMocks" key if mocks are selected', () => {
