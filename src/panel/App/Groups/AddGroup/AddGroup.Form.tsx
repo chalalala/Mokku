@@ -72,7 +72,7 @@ export const AddGroupForm = ({
     selectedGroup.mocksIds || []
   );
 
-  const isNewMock = !selectedGroup.id;
+  const isNewGroup = !selectedGroup.id;
   const hasSelectedMocks = !!selectedMocksIds.length;
 
   const onAddMock = (mockId: string) => {
@@ -90,7 +90,7 @@ export const AddGroupForm = ({
 
     values.mocksIds = selectedMocksIds;
 
-    const updatedStore = isNewMock
+    const updatedStore = isNewGroup
       ? storeActions.addGroups(store, values)
       : storeActions.updateGroups(store, values);
 
@@ -101,17 +101,17 @@ export const AddGroupForm = ({
         storeActions.refreshContentStore(tab.id);
         setSelectedGroup();
         notifications.show({
-          title: `${values.name} group ${isNewMock ? "added" : "updated"}`,
+          title: `${values.name} group ${isNewGroup ? "added" : "updated"}`,
           message: `Group "${values.name}" has been ${
-            isNewMock ? "added" : "updated"
+            isNewGroup ? "added" : "updated"
           }.`,
         });
       })
       .catch(() => {
         notifications.show({
-          title: `Cannot ${isNewMock ? "add" : "update"} group.`,
+          title: `Cannot ${isNewGroup ? "add" : "update"} group.`,
           message: `Something went wrong, unable to ${
-            isNewMock ? "add" : "update"
+            isNewGroup ? "add" : "update"
           } new group.`,
           color: "red",
         });
@@ -124,62 +124,60 @@ export const AddGroupForm = ({
 
   return (
     <form style={{ height: "100%" }} onSubmit={form.onSubmit(onSubmit)}>
-      <>
-        <Card className={card}>
-          <SideDrawerHeader>
-            <Title order={6}>{isNewMock ? "Add Group" : "Update Group"}</Title>
-            <MdClose
-              style={{ cursor: "pointer" }}
-              onClick={() => setSelectedGroup()}
+      <Card className={card}>
+        <SideDrawerHeader>
+          <Title order={6}>{isNewGroup ? "Add Group" : "Update Group"}</Title>
+          <MdClose
+            style={{ cursor: "pointer" }}
+            onClick={() => setSelectedGroup()}
+          />
+        </SideDrawerHeader>
+        <Flex direction="column" gap={16} className={wrapper}>
+          <Flex gap={12} align="center">
+            <TextInput
+              required
+              label="Name"
+              placeholder="Goals Success"
+              className={flexGrow}
+              {...form.getInputProps("name")}
             />
-          </SideDrawerHeader>
-          <Flex direction="column" gap={16} className={wrapper}>
-            <Flex gap={12} align="center">
-              <TextInput
-                required
-                label="Name"
-                placeholder="Goals Success"
-                className={flexGrow}
-                {...form.getInputProps("name")}
-              />
-            </Flex>
-            <Flex gap={12} align="center">
-              <Textarea
-                className={flexGrow}
-                label="Description"
-                placeholder="Success case for goals API"
-                {...form.getInputProps("description")}
-              />
-            </Flex>
-            <Flex direction="column" gap={12}>
-              <AddGroupListMocks
-                store={store}
-                selectedMocks={selectedMocksIds}
-                onAddMock={onAddMock}
-                onRemoveMock={onRemoveMock}
-                toggleMock={toggleMock}
-              />
-            </Flex>
           </Flex>
-          <Flex className={footer} justify="space-between">
-            <Text color="red">
-              {hasSelectedMocks ? "" : "Add at least one mock to group!"}
-            </Text>
-            <Flex justify="flex-end" gap={4}>
-              <Button
-                color="red"
-                compact
-                onClick={() => setSelectedGroup(undefined)}
-              >
-                Close
-              </Button>
-              <Button compact type="submit" disabled={!hasSelectedMocks}>
-                {isNewMock ? "Add Group" : "Update Group"}
-              </Button>
-            </Flex>
+          <Flex gap={12} align="center">
+            <Textarea
+              className={flexGrow}
+              label="Description"
+              placeholder="Success case for goals API"
+              {...form.getInputProps("description")}
+            />
           </Flex>
-        </Card>
-      </>
+          <Flex direction="column" gap={12}>
+            <AddGroupListMocks
+              store={store}
+              selectedMocks={selectedMocksIds}
+              onAddMock={onAddMock}
+              onRemoveMock={onRemoveMock}
+              toggleMock={toggleMock}
+            />
+          </Flex>
+        </Flex>
+        <Flex className={footer} justify="space-between">
+          <Text color="red">
+            {hasSelectedMocks ? "" : "Add at least one mock to group!"}
+          </Text>
+          <Flex justify="flex-end" gap={4}>
+            <Button
+              color="red"
+              compact
+              onClick={() => setSelectedGroup(undefined)}
+            >
+              Close
+            </Button>
+            <Button compact type="submit" disabled={!hasSelectedMocks}>
+              {isNewGroup ? "Add Group" : "Update Group"}
+            </Button>
+          </Flex>
+        </Flex>
+      </Card>
     </form>
   );
 };
