@@ -12,16 +12,6 @@ interface IImportData {
   groups?: IMockGroup[];
 }
 
-const isGroups = (items: IMockGroup | IMockResponse): items is IMockGroup => {
-  // It's groups if having mocksIds
-  if (items?.[0].mocksIds) {
-    return true;
-  }
-
-  // Otherwise it's mocks
-  return false;
-};
-
 export const ImportButton = () => {
   const { store, setStoreProperties, setSelectedMock } = useChromeStore(
     useMockStoreSelector,

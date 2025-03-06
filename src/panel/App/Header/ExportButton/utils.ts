@@ -28,7 +28,9 @@ export const getExportData = ({
 
     for (const group of selectedGroups) {
       for (const mockId of group.mocksIds) {
-        exportingMocks.add(mockObj[mockId]);
+        if (mockObj[mockId]) {
+          exportingMocks.add(mockObj[mockId]);
+        }
       }
     }
   }

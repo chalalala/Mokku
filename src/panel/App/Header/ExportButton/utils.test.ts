@@ -69,6 +69,23 @@ describe("getExportData", () => {
     });
   });
 
+  it("should not include mock if mock id is not found", () => {
+    const groups = [
+      {
+        ...selectedGroups[0],
+        mocksIds: ["not-found"],
+      },
+    ];
+    expect(
+      getExportData({
+        selectedGroups: groups,
+        mocks,
+      })
+    ).toEqual({
+      groups,
+    });
+  });
+
   it('should return object with "mocks" and "groups" keys if both mocks and groups are selected', () => {
     expect(
       getExportData({
