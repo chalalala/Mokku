@@ -16,6 +16,7 @@ import { Notifications } from "@mantine/notifications";
 import { Modal } from "./Blocks/Modal";
 import { Header } from "./Header";
 import { Groups } from "./Groups/Groups";
+import { storeName } from "./service/storeActions";
 
 export const App = (props: useGlobalStoreState["meta"]) => {
   const state = usePanelListener(props);
@@ -25,12 +26,29 @@ export const App = (props: useGlobalStoreState["meta"]) => {
 
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const initMockStore = useChromeStore((state) => state.init);
+  const setStore = useChromeStore((state) => state.setStore);
 
   useEffect(() => {
     initMockStore();
     setMeta(props);
     const theme = (localStorage.getItem("theme") || "light") as ColorScheme;
     setColorScheme(theme);
+
+    const syncStoreChanges = async (changes: any, namespace: string) => {
+      if (namespace !== "local") {
+        return;
+      }
+
+      if (changes[storeName]) {
+        setStore(changes[storeName].newValue);
+      }
+    };
+
+    chrome.storage.onChanged.addListener(syncStoreChanges);
+
+    return () => {
+      chrome.storage.onChanged.removeListener(syncStoreChanges);
+    };
   }, []);
 
   useEffect(() => {

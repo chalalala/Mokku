@@ -11,7 +11,7 @@ const getNetworkMethodMap = () => ({
   DELETE: [],
 });
 
-const storeName = "mokku.extension.main.db";
+export const storeName = "mokku.extension.main.db";
 
 export const getDefaultStore = (): IStore => ({
   theme: "light",
