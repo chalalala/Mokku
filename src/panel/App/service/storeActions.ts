@@ -16,7 +16,7 @@ const getNetworkMethodMap = () => ({
   DELETE: [],
 });
 
-const storeName = "mokku.extension.main.db";
+export const storeName = "mokku.extension.main.db";
 
 export const getDefaultStore = (): IStore => ({
   theme: "light",
@@ -63,7 +63,7 @@ export const updateStoreInDB = (store: IStore) => {
       } catch (error) {
         reject(error);
       }
-    },
+    }
   );
 };
 
@@ -115,7 +115,7 @@ export const getURLMapWithStore = (store: IStore) => {
 
 export const addMocks = (
   oldStore: IStore,
-  dirtyNewMock: IMockResponse | IMockResponse[],
+  dirtyNewMock: IMockResponse | IMockResponse[]
 ) => {
   const store = { ...oldStore };
 
@@ -135,7 +135,7 @@ type PartialMockWithId = { id: IMockResponse["id"] } & Partial<IMockResponse>;
 
 export const updateMocks = (
   oldStore: IStore,
-  dirtyNewMock: PartialMockWithId | Array<PartialMockWithId>,
+  dirtyNewMock: PartialMockWithId | Array<PartialMockWithId>
 ) => {
   const store = { ...oldStore };
 
@@ -165,7 +165,7 @@ export const updateMocks = (
 
 export const deleteMocks = (
   draftStore: IStore,
-  dirtyMockId: string | string[],
+  dirtyMockId: string | string[]
 ) => {
   const mockIdsSet = Array.isArray(dirtyMockId)
     ? new Set(dirtyMockId)
@@ -194,7 +194,7 @@ export const refreshContentStore = (tabId?: number) => {
       to: "CONTENT",
       type: "NOTIFICATION",
     },
-    tabId,
+    tabId
   );
 };
 
