@@ -15,7 +15,7 @@ const useMockStoreSelector = (state: useChromeStoreState) => ({
 export const useGroupActions = () => {
   const { store, setSelectedGroup, setStoreProperties } = useChromeStore(
     useMockStoreSelector,
-    shallow,
+    shallow
   );
   const tab = useGlobalStore((state) => state.meta.tab);
 
@@ -49,13 +49,13 @@ export const useGroupActions = () => {
           });
         });
     },
-    [store, setStoreProperties],
+    [store, setStoreProperties]
   );
   const deleteGroup = useCallback(
     (groupToBeDeleted: IMockGroup) => {
       const updatedStore = storeActions.deleteGroups(
         store,
-        groupToBeDeleted.id,
+        groupToBeDeleted.id
       );
 
       storeActions
@@ -78,20 +78,20 @@ export const useGroupActions = () => {
           });
         });
     },
-    [store, setStoreProperties],
+    [store, setStoreProperties]
   );
   const duplicateGroup = useCallback(
     (group: IMockGroup) => {
       setSelectedGroup({ ...group, id: undefined });
     },
-    [setSelectedGroup],
+    [setSelectedGroup]
   );
 
   const editGroup = useCallback(
     (group: IMockGroup) => {
       setSelectedGroup(group);
     },
-    [setSelectedGroup],
+    [setSelectedGroup]
   );
 
   return {

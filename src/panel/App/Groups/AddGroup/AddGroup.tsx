@@ -4,8 +4,12 @@ import { useChromeStore, useMockStoreSelector } from "../../store/useMockStore";
 import { AddGroupForm } from "./AddGroup.Form";
 
 export const AddGroup = () => {
-  const { store, selectedGroup, setSelectedGroup, setStoreProperties } =
-    useChromeStore(useMockStoreSelector);
+  const {
+    store,
+    selectedGroup,
+    setSelectedGroup,
+    setStoreProperties,
+  } = useChromeStore(useMockStoreSelector);
 
   return (
     <SideDrawer minWidth={480}>
