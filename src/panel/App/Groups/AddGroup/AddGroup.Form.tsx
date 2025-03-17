@@ -88,7 +88,22 @@ export const AddGroupForm = ({
       values.id = uuidv4();
     }
 
-    values.mocksIds = selectedMocksIds;
+    const validMocksIds = [];
+
+    for (const mock of store.mocks) {
+      if (validMocksIds.length === selectedMocksIds.length) {
+        break;
+      }
+
+      if (!selectedMocksIds.includes(mock.id)) {
+        continue;
+      }
+
+      mock.groupIds = [...new Set([...(mock.groupIds || []), values.id])];
+      validMocksIds.push(mock.id);
+    }
+
+    values.mocksIds = validMocksIds;
 
     const updatedStore = isNewGroup
       ? storeActions.addGroups(store, values)

@@ -175,12 +175,30 @@ export const deleteMocks = (
     ? new Set(dirtyMockId)
     : new Set([dirtyMockId]);
 
-  const mocks = draftStore.mocks.filter((mock) => {
-    if (mockIdsSet.has(mock.id)) {
-      return false;
+  const groupObject = draftStore.groups.reduce((acc, group) => {
+    acc[group.id] = group;
+    return acc;
+  }, {} as Record<string, IMockGroup>);
+
+  const mocks = [];
+
+  for (const mock of draftStore.mocks) {
+    if (!mockIdsSet.has(mock.id)) {
+      mocks.push(mock);
+      continue;
     }
-    return true;
-  });
+
+    // Remove the mock from the group
+    const groupIds = mock.groupIds || [];
+
+    for (const groupId of groupIds) {
+      const group = groupObject[groupId];
+
+      if (group) {
+        group.mocksIds = group.mocksIds.filter((id) => id !== mock.id);
+      }
+    }
+  }
 
   const store = {
     ...draftStore,
