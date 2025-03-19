@@ -24,7 +24,7 @@ messageService.listen("HOOK", (data) => {
 const postMessage = (
   message: IEventMessage["message"],
   type: IEventMessage["type"],
-  ackRequired,
+  ackRequired
 ) => {
   const messageId = ackRequired ? messageIdFactory.getId() : null;
 
@@ -82,6 +82,14 @@ xhook.before(function (request, callback) {
         } else {
           callback(finalResponse);
         }
+
+        // Show log for mock request
+        console.log(
+          `%c[Mokku] ${new Date().toLocaleTimeString()}\n🛠️ ${mock.method} ${
+            mock.url
+          } ${mock.status}`,
+          "color: orange; font-weight: 600;"
+        );
       } else {
         callback();
       }
@@ -98,7 +106,7 @@ const getLog = (
       id: string;
     };
   },
-  response?: ILog["response"],
+  response?: ILog["response"]
 ): IEventMessage["message"] => {
   const separator = request.url.indexOf("?");
   const url = separator !== -1 ? request.url.substr(0, separator) : request.url;
