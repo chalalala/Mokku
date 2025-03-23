@@ -9,7 +9,6 @@ import {
   Textarea,
   TextInput,
   Title,
-  JsonInput,
 } from "@mantine/core";
 import { v4 as uuidv4 } from "uuid";
 import React from "react";
@@ -27,6 +26,7 @@ import { useChromeStoreState } from "../../store/useMockStore";
 import { notifications } from "@mantine/notifications";
 import { useGlobalStore } from "../../store/useGlobalStore";
 import { isJsonValid } from "./utils";
+import MonacoEditor from "react-monaco-editor";
 
 const useStyles = createStyles((theme) => ({
   flexGrow: {
@@ -46,6 +46,7 @@ const useStyles = createStyles((theme) => ({
     paddingTop: 0,
   },
   tabs: {
+    width: "100%",
     flexGrow: 2,
     display: "flex",
     flexDirection: "column",
@@ -83,6 +84,17 @@ export const AddMockForm = ({
   const isNewMock = !selectedMock.id;
   const response = form.values["response"];
   const jsonValid = response ? isJsonValid(response) : true;
+
+  const prettifyResponse = () => {
+    try {
+      form.setFieldValue(
+        "response",
+        JSON.stringify(JSON.parse(response), null, 2),
+      );
+    } catch (e) {
+      console.error("Error parsing JSON", e);
+    }
+  };
 
   return (
     <form
@@ -224,13 +236,39 @@ export const AddMockForm = ({
                 </Tabs.List>
 
                 <Tabs.Panel value="body" pt="xs" className={flexGrow}>
-                  <JsonInput
+                  {/* <JsonInput
                     placeholder="Response, this will auto resize. You can leave this empty or enter a valid JSON"
                     formatOnBlur
                     autosize
                     minRows={4}
                     {...form.getInputProps("response")}
-                  />
+                  /> */}
+
+                  <Card withBorder padding={0} onBlur={prettifyResponse}>
+                    <MonacoEditor
+                      language="json"
+                      height="198px"
+                      theme="vs"
+                      options={{
+                        contextmenu: false,
+                        cursorSurroundingLinesStyle: "all",
+                        padding: {
+                          top: 16,
+                          bottom: 16,
+                        },
+                        wordWrap: "on",
+                        suggestOnTriggerCharacters: false,
+                        renderLineHighlight: "none",
+                        lineNumbersMinChars: 3,
+                        tabSize: 2,
+                        insertSpaces: false,
+                        find: {
+                          addExtraSpaceOnTop: false,
+                        },
+                      }}
+                      {...form.getInputProps("response")}
+                    />
+                  </Card>
                 </Tabs.Panel>
 
                 <Tabs.Panel value="headers" pt="xs">

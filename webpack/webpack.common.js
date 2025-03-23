@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const srcDir = "../src/";
 
 module.exports = {
@@ -57,5 +58,9 @@ module.exports = {
     // exclude locale files in moment
     new webpack.IgnorePlugin({ resourceRegExp: /moment\/locale\// }),
     new CopyPlugin([{ from: ".", to: "../" }], { context: "public" }),
+    new MonacoWebpackPlugin({
+      // available options are documented at https://github.com/microsoft/monaco-editor/blob/main/webpack-plugin/README.md#options
+      languages: ["json"],
+    }),
   ],
 };
