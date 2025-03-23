@@ -1,1 +1,0 @@
-chrome.devtools.panels.create("Mokku","icon.png","panel.html",(function(e){}));
