@@ -3,6 +3,7 @@
 ### ✨ New features on this fork ✨
 
 - Sync changes between tabs
+- Logs for mock calls in the console
 - Import/export mocks
 - Toggle all mocks
 - Group of mocks
