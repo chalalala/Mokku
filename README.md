@@ -4,6 +4,7 @@
 
 - Sync changes between tabs
 - Logs for mock calls in the console
+- Code editor with find and replace box for the mock response body
 - Import/export mocks
 - Toggle all mocks
 - Group of mocks
