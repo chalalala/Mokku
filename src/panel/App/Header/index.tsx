@@ -30,10 +30,10 @@ const viewSelector = (state: useGlobalStoreState) => ({
 export const Header = () => {
   const { view, setView, search, setSearch } = useGlobalStore(
     viewSelector,
-    shallow
+    shallow,
   );
   const { setSelectedMock, setSelectedGroup } = useChromeStore(
-    useMockStoreSelector
+    useMockStoreSelector,
   );
   const { resetSelection } = useSelectionStore();
 
