@@ -8,6 +8,7 @@ export const AddGroup = () => {
     store,
     selectedGroup,
     setSelectedGroup,
+    setSelectedMock,
     setStoreProperties,
   } = useChromeStore(useMockStoreSelector);
 
@@ -18,6 +19,7 @@ export const AddGroup = () => {
         store={store}
         selectedGroup={selectedGroup}
         setSelectedGroup={setSelectedGroup}
+        setSelectedMock={setSelectedMock}
         setStoreProperties={setStoreProperties}
       />
     </SideDrawer>

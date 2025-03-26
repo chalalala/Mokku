@@ -20,6 +20,7 @@ import { useGlobalStore } from "../../store/useGlobalStore";
 import { IMockGroup } from "../../types/mockGroup";
 import { AddGroupListMocks } from "./AddGroup.ListMocks";
 import { useMockActions } from "../../Mocks/Mocks.action";
+import { IMockResponse } from "@mokku/types";
 
 const useStyles = createStyles((theme) => ({
   flexGrow: {
@@ -53,10 +54,15 @@ export const AddGroupForm = ({
   store,
   selectedGroup,
   setSelectedGroup,
+  setSelectedMock,
   setStoreProperties,
 }: Pick<
   useChromeStoreState,
-  "store" | "selectedGroup" | "setSelectedGroup" | "setStoreProperties"
+  | "store"
+  | "selectedGroup"
+  | "setSelectedGroup"
+  | "setSelectedMock"
+  | "setStoreProperties"
 >) => {
   const {
     classes: { flexGrow, wrapper, footer, card },
@@ -69,7 +75,7 @@ export const AddGroupForm = ({
     },
   });
   const [selectedMocksIds, setSelectedMocksIds] = useState<string[]>(
-    selectedGroup.mocksIds || []
+    selectedGroup.mocksIds || [],
   );
 
   const isNewGroup = !selectedGroup.id;
@@ -81,6 +87,11 @@ export const AddGroupForm = ({
 
   const onRemoveMock = (mockId: string) => {
     setSelectedMocksIds((ids) => ids.filter((id) => id !== mockId));
+  };
+
+  const onMockRowClick = (mock: IMockResponse) => {
+    setSelectedMock(mock);
+    setSelectedGroup(undefined);
   };
 
   const onSubmit = (values: IMockGroup) => {
@@ -172,6 +183,7 @@ export const AddGroupForm = ({
               onAddMock={onAddMock}
               onRemoveMock={onRemoveMock}
               toggleMock={toggleMock}
+              onRowClick={onMockRowClick}
             />
           </Flex>
         </Flex>

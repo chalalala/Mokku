@@ -11,6 +11,7 @@ interface Props {
   onAddMock: (mockId: string) => void;
   onRemoveMock: (mockId: string) => void;
   toggleMock: (mock: IMockResponse) => void;
+  onRowClick: (mock: IMockResponse) => void;
 }
 
 interface GetSchemeProps {
@@ -104,6 +105,7 @@ export const AddGroupListMocks = ({
   onAddMock,
   onRemoveMock,
   toggleMock,
+  onRowClick,
 }: Props) => {
   const { classes } = useStyles();
   const [search, setSearch] = useState("");
@@ -122,7 +124,7 @@ export const AddGroupListMocks = ({
         (mock?.method || "")
           .toLowerCase()
           .includes(search.toLocaleLowerCase()) ||
-        (mock?.status || "").toString().includes(search.toLocaleLowerCase())
+        (mock?.status || "").toString().includes(search.toLocaleLowerCase()),
     );
 
     filtered.sort((a, b) => {
@@ -155,6 +157,7 @@ export const AddGroupListMocks = ({
         schema={schema}
         selectedRowId={selectedMocks}
         selectedRowClass={classes.selectedRow}
+        onRowClick={onRowClick}
       />
     </>
   );
