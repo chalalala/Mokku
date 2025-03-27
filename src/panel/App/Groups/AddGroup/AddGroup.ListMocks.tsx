@@ -104,6 +104,9 @@ const useStyles = createStyles((theme) => ({
         : {}),
     },
   },
+  tableWrapper: {
+    overflow: "auto",
+  },
 }));
 
 export const AddGroupListMocks = ({
@@ -159,7 +162,7 @@ export const AddGroupListMocks = ({
         defaultValue={search}
         onChange={(event) => setSearch(event.target.value)}
       />
-      <div style={{ overflow: "auto" }}>
+      <div className={classes.tableWrapper}>
         <TableWrapper
           data={filteredMocks}
           schema={schema}
