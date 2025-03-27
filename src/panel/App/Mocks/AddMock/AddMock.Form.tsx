@@ -136,107 +136,103 @@ export const AddMockForm = ({
           });
       })}
     >
-      <>
-        <Card className={card}>
-          <SideDrawerHeader>
-            <Title order={6}>{isNewMock ? "Add Mock" : "Update Mock"}</Title>
-            <MdClose
-              style={{ cursor: "pointer" }}
-              onClick={() => setSelectedMock()}
+      <Card className={card}>
+        <SideDrawerHeader>
+          <Title order={6}>{isNewMock ? "Add Mock" : "Update Mock"}</Title>
+          <MdClose
+            style={{ cursor: "pointer" }}
+            onClick={() => setSelectedMock()}
+          />
+        </SideDrawerHeader>
+        <Flex direction="column" gap={16} className={wrapper}>
+          <Flex gap={12} align="center">
+            <Flex direction="column">
+              <Text fw={500} fz="sm">
+                Status
+              </Text>
+              <SegmentedControl
+                value={
+                  form.values.active
+                    ? MockStatusEnum.ACTIVE
+                    : MockStatusEnum.INACTIVE
+                }
+                onChange={(value) =>
+                  form.setFieldValue("active", value === MockStatusEnum.ACTIVE)
+                }
+                size="xs"
+                data={[
+                  { label: "Active", value: MockStatusEnum.ACTIVE },
+                  { label: "Inactive", value: MockStatusEnum.INACTIVE },
+                ]}
+              />
+            </Flex>
+            <TextInput
+              required
+              label="Name"
+              placeholder="Goals Success"
+              className={flexGrow}
+              {...form.getInputProps("name")}
             />
-          </SideDrawerHeader>
-          <Flex direction="column" gap={16} className={wrapper}>
-            <Flex gap={12} align="center">
-              <Flex direction="column">
-                <Text fw={500} fz="sm">
-                  Status
-                </Text>
-                <SegmentedControl
-                  value={
-                    form.values.active
-                      ? MockStatusEnum.ACTIVE
-                      : MockStatusEnum.INACTIVE
-                  }
-                  onChange={(value) =>
-                    form.setFieldValue(
-                      "active",
-                      value === MockStatusEnum.ACTIVE,
-                    )
-                  }
-                  size="xs"
-                  data={[
-                    { label: "Active", value: MockStatusEnum.ACTIVE },
-                    { label: "Inactive", value: MockStatusEnum.INACTIVE },
-                  ]}
-                />
-              </Flex>
-              <TextInput
-                required
-                label="Name"
-                placeholder="Goals Success"
-                className={flexGrow}
-                {...form.getInputProps("name")}
+          </Flex>
+          <Flex gap={12} align="center">
+            <Textarea
+              className={flexGrow}
+              label="Description"
+              placeholder="Success case for goals API"
+              {...form.getInputProps("description")}
+            />
+          </Flex>
+          <Flex gap={12} align="center">
+            <TextInput
+              className={flexGrow}
+              label="URL"
+              required
+              placeholder="https://api.awesomeapp.com/goals"
+              {...form.getInputProps("url")}
+            />
+          </Flex>
+          <Flex gap={12} align="center">
+            <Flex direction="column">
+              <Text>Method</Text>
+              <SegmentedControl
+                value={form.values.method}
+                onChange={(value) =>
+                  form.setFieldValue("method", value as MethodEnum)
+                }
+                size="xs"
+                data={[
+                  { label: "GET", value: MethodEnum.GET },
+                  { label: "POST", value: MethodEnum.POST },
+                  { label: "PUT", value: MethodEnum.PUT },
+                  { label: "PATCH", value: MethodEnum.PATCH },
+                  { label: "DELETE", value: MethodEnum.DELETE },
+                ]}
               />
             </Flex>
-            <Flex gap={12} align="center">
-              <Textarea
-                className={flexGrow}
-                label="Description"
-                placeholder="Success case for goals API"
-                {...form.getInputProps("description")}
-              />
-            </Flex>
-            <Flex gap={12} align="center">
-              <TextInput
-                className={flexGrow}
-                label="URL"
-                required
-                placeholder="https://api.awesomeapp.com/goals"
-                {...form.getInputProps("url")}
-              />
-            </Flex>
-            <Flex gap={12} align="center">
-              <Flex direction="column">
-                <Text>Method</Text>
-                <SegmentedControl
-                  value={form.values.method}
-                  onChange={(value) =>
-                    form.setFieldValue("method", value as MethodEnum)
-                  }
-                  size="xs"
-                  data={[
-                    { label: "GET", value: MethodEnum.GET },
-                    { label: "POST", value: MethodEnum.POST },
-                    { label: "PUT", value: MethodEnum.PUT },
-                    { label: "PATCH", value: MethodEnum.PATCH },
-                    { label: "DELETE", value: MethodEnum.DELETE },
-                  ]}
-                />
-              </Flex>
-              <TextInput
-                required
-                label="Status"
-                type="number"
-                placeholder="200"
-                {...form.getInputProps("status")}
-              />
-              <TextInput
-                required
-                label="Delay (ms)"
-                placeholder="500"
-                type="number"
-                {...form.getInputProps("delay")}
-              />
-            </Flex>
-            <Flex className={flexGrow}>
-              <Tabs defaultValue="body" className={tabs}>
-                <Tabs.List>
-                  <Tabs.Tab value="body">Response Body</Tabs.Tab>
-                  <Tabs.Tab value="headers">Response Headers</Tabs.Tab>
-                </Tabs.List>
+            <TextInput
+              required
+              label="Status"
+              type="number"
+              placeholder="200"
+              {...form.getInputProps("status")}
+            />
+            <TextInput
+              required
+              label="Delay (ms)"
+              placeholder="500"
+              type="number"
+              {...form.getInputProps("delay")}
+            />
+          </Flex>
+          <Flex className={flexGrow}>
+            <Tabs defaultValue="body" className={tabs}>
+              <Tabs.List>
+                <Tabs.Tab value="body">Response Body</Tabs.Tab>
+                <Tabs.Tab value="headers">Response Headers</Tabs.Tab>
+              </Tabs.List>
 
-                <Tabs.Panel value="body" pt="xs" className={flexGrow}>
-                  {/* <JsonInput
+              <Tabs.Panel value="body" pt="xs" className={flexGrow}>
+                {/* <JsonInput
                     placeholder="Response, this will auto resize. You can leave this empty or enter a valid JSON"
                     formatOnBlur
                     autosize
@@ -244,96 +240,93 @@ export const AddMockForm = ({
                     {...form.getInputProps("response")}
                   /> */}
 
-                  <Card withBorder padding={0} onBlur={prettifyResponse}>
-                    <MonacoEditor
-                      language="json"
-                      height="198px"
-                      theme="vs"
-                      options={{
-                        contextmenu: false,
-                        cursorSurroundingLinesStyle: "all",
-                        padding: {
-                          top: 16,
-                          bottom: 16,
-                        },
-                        wordWrap: "on",
-                        suggestOnTriggerCharacters: false,
-                        renderLineHighlight: "none",
-                        lineNumbersMinChars: 3,
-                        tabSize: 2,
-                        insertSpaces: false,
-                        find: {
-                          addExtraSpaceOnTop: false,
-                        },
-                      }}
-                      {...form.getInputProps("response")}
-                    />
-                  </Card>
-                </Tabs.Panel>
-
-                <Tabs.Panel value="headers" pt="xs">
-                  <Button
-                    variant="subtle"
-                    style={{ marginBottom: 8 }}
-                    onClick={() => {
-                      form.insertListItem(
-                        "headers",
-                        {
-                          name: "",
-                          value: "",
-                        },
-                        0,
-                      );
+                <Card withBorder padding={0} onBlur={prettifyResponse}>
+                  <MonacoEditor
+                    language="json"
+                    height="198px"
+                    theme={store.theme === "dark" ? "vs-dark" : "vs"}
+                    options={{
+                      contextmenu: false,
+                      cursorSurroundingLinesStyle: "all",
+                      padding: {
+                        top: 16,
+                        bottom: 16,
+                      },
+                      wordWrap: "on",
+                      suggestOnTriggerCharacters: false,
+                      renderLineHighlight: "none",
+                      lineNumbersMinChars: 3,
+                      tabSize: 2,
+                      insertSpaces: false,
+                      find: {
+                        addExtraSpaceOnTop: false,
+                      },
                     }}
-                  >
-                    + Add Header
-                  </Button>
-                  <Flex gap={8} direction="column">
-                    {form.values.headers?.map((_, index) => (
-                      <Flex gap={12} align="center" key={index}>
-                        <TextInput
-                          required
-                          placeholder="Name"
-                          className={flexGrow}
-                          {...form.getInputProps(`headers.${index}.name`)}
-                        />
-                        <TextInput
-                          required
-                          placeholder="Value"
-                          className={flexGrow}
-                          {...form.getInputProps(`headers.${index}.value`)}
-                        />
-                        <MdDeleteOutline
-                          onClick={() => {
-                            form.removeListItem("headers", index);
-                          }}
-                        />
-                      </Flex>
-                    ))}
-                  </Flex>
-                </Tabs.Panel>
-              </Tabs>
-            </Flex>
+                    {...form.getInputProps("response")}
+                  />
+                </Card>
+              </Tabs.Panel>
+
+              <Tabs.Panel value="headers" pt="xs">
+                <Button
+                  variant="subtle"
+                  style={{ marginBottom: 8 }}
+                  onClick={() => {
+                    form.insertListItem(
+                      "headers",
+                      {
+                        name: "",
+                        value: "",
+                      },
+                      0,
+                    );
+                  }}
+                >
+                  + Add Header
+                </Button>
+                <Flex gap={8} direction="column">
+                  {form.values.headers?.map((_, index) => (
+                    <Flex gap={12} align="center" key={index}>
+                      <TextInput
+                        required
+                        placeholder="Name"
+                        className={flexGrow}
+                        {...form.getInputProps(`headers.${index}.name`)}
+                      />
+                      <TextInput
+                        required
+                        placeholder="Value"
+                        className={flexGrow}
+                        {...form.getInputProps(`headers.${index}.value`)}
+                      />
+                      <MdDeleteOutline
+                        onClick={() => {
+                          form.removeListItem("headers", index);
+                        }}
+                      />
+                    </Flex>
+                  ))}
+                </Flex>
+              </Tabs.Panel>
+            </Tabs>
           </Flex>
-          <Flex className={footer} justify="space-between">
-            <Text color="red">
-              {jsonValid ? "" : "Response JSON not valid"}
-            </Text>
-            <Flex justify="flex-end" gap={4}>
-              <Button
-                color="red"
-                compact
-                onClick={() => setSelectedMock(undefined)}
-              >
-                Close
-              </Button>
-              <Button compact type="submit" disabled={!jsonValid}>
-                {isNewMock ? "Add Mock" : "Update Mock"}
-              </Button>
-            </Flex>
+        </Flex>
+        <Flex className={footer} justify="space-between">
+          <Text color="red">{jsonValid ? "" : "Response JSON not valid"}</Text>
+          <Flex justify="flex-end" gap={4}>
+            <Button
+              color="red"
+              compact
+              onClick={() => setSelectedMock(undefined)}
+            >
+              Close
+            </Button>
+            <Button compact type="submit" disabled={!jsonValid}>
+              {isNewMock ? "Add Mock" : "Update Mock"}
+            </Button>
           </Flex>
-        </Card>
-      </>
+        </Flex>
+      </Card>
     </form>
   );
 };
