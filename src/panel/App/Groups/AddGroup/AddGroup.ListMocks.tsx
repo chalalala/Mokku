@@ -159,13 +159,15 @@ export const AddGroupListMocks = ({
         defaultValue={search}
         onChange={(event) => setSearch(event.target.value)}
       />
-      <TableWrapper
-        data={filteredMocks}
-        schema={schema}
-        selectedRowId={selectedMocks}
-        selectedRowClass={classes.selectedRow}
-        onRowClick={onRowClick}
-      />
+      <div style={{ overflow: "auto" }}>
+        <TableWrapper
+          data={filteredMocks}
+          schema={schema}
+          selectedRowId={selectedMocks}
+          selectedRowClass={classes.selectedRow}
+          onRowClick={onRowClick}
+        />
+      </div>
     </>
   );
 };
