@@ -258,8 +258,9 @@ export const AddMockForm = ({
                       lineNumbersMinChars: 3,
                       tabSize: 2,
                       insertSpaces: false,
-                      find: {
-                        addExtraSpaceOnTop: false,
+                      automaticLayout: true,
+                      minimap: {
+                        enabled: false,
                       },
                     }}
                     {...form.getInputProps("response")}
