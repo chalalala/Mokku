@@ -251,8 +251,8 @@ export const AddMockForm = ({
                       contextmenu: false,
                       cursorSurroundingLinesStyle: "all",
                       padding: {
-                        top: 16,
-                        bottom: 16,
+                        top: 8,
+                        bottom: 8,
                       },
                       wordWrap: "on",
                       suggestOnTriggerCharacters: false,
