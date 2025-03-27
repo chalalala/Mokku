@@ -177,6 +177,9 @@ export const AddGroupForm = ({
             />
           </Flex>
           <Flex direction="column" gap={12}>
+            <Text fw={500} fz="sm">
+              Mocks
+            </Text>
             <AddGroupListMocks
               store={store}
               selectedMocks={selectedMocksIds}
