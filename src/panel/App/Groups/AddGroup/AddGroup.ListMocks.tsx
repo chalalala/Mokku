@@ -1,5 +1,5 @@
 import { Button, createStyles, Input, Switch } from "@mantine/core";
-import React, { useMemo, useState } from "react";
+import React, { MouseEvent, useMemo, useState } from "react";
 import { TbSearch } from "react-icons/tb";
 import { TableSchema, TableWrapper } from "../../Blocks/Table";
 import { IMockResponse, IStore } from "@mokku/types";
@@ -31,9 +31,16 @@ const getSchema = ({
     header: "",
     content: (data) => {
       const isSelected = selectedMocks.includes(data.id);
-      const onClick = isSelected
-        ? () => onRemoveMock(data.id)
-        : () => onAddMock(data.id);
+
+      const onClick = (event: MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+
+        if (isSelected) {
+          onRemoveMock(data.id);
+        } else {
+          onAddMock(data.id);
+        }
+      };
 
       return (
         <Button
