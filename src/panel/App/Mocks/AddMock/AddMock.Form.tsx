@@ -9,6 +9,7 @@ import {
   Textarea,
   TextInput,
   Title,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { v4 as uuidv4 } from "uuid";
 import React from "react";
@@ -70,6 +71,7 @@ export const AddMockForm = ({
     classes: { flexGrow, wrapper, tabs, footer, card },
   } = useStyles();
   const tab = useGlobalStore((state) => state.meta.tab);
+  const { colorScheme } = useMantineColorScheme();
 
   const form = useForm<IMockResponseRaw>({
     initialValues: {
@@ -244,7 +246,7 @@ export const AddMockForm = ({
                   <MonacoEditor
                     language="json"
                     height="198px"
-                    theme={store.theme === "dark" ? "vs-dark" : "vs"}
+                    theme={colorScheme === "dark" ? "vs-dark" : "vs"}
                     options={{
                       contextmenu: false,
                       cursorSurroundingLinesStyle: "all",
