@@ -62,12 +62,18 @@ const getSchema = ({
   {
     header: "Is Active",
     content: (data) => (
-      <Switch
-        checked={data.active}
-        onChange={(x) => {
-          toggleMock({ ...data, active: x.target.checked });
+      <div
+        onClick={(event) => {
+          event.stopPropagation();
         }}
-      />
+      >
+        <Switch
+          checked={data.active}
+          onChange={(event) => {
+            toggleMock({ ...data, active: event.target.checked });
+          }}
+        />
+      </div>
     ),
     width: 60,
   },
