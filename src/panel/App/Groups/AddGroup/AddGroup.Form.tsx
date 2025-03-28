@@ -38,6 +38,11 @@ const useStyles = createStyles((theme) => ({
     height: "100%",
     overflow: "auto",
     paddingTop: 0,
+    minHeight: 0,
+  },
+  tableWrapper: {
+    flex: 1,
+    minHeight: 0,
   },
   tabs: {
     flexGrow: 2,
@@ -65,7 +70,7 @@ export const AddGroupForm = ({
   | "setStoreProperties"
 >) => {
   const {
-    classes: { flexGrow, wrapper, footer, card },
+    classes: { flexGrow, wrapper, tableWrapper, footer, card },
   } = useStyles();
   const tab = useGlobalStore((state) => state.meta.tab);
   const { toggleMock } = useMockActions();
@@ -176,7 +181,10 @@ export const AddGroupForm = ({
               {...form.getInputProps("description")}
             />
           </Flex>
-          <Flex direction="column" gap={12}>
+          <Flex direction="column" gap={12} className={tableWrapper}>
+            <Text fw={500} fz="sm">
+              Mocks
+            </Text>
             <AddGroupListMocks
               store={store}
               selectedMocks={selectedMocksIds}
