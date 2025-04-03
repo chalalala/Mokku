@@ -112,6 +112,7 @@ const useStyles = createStyles((theme) => ({
   },
   tableWrapper: {
     overflow: "auto",
+    minHeight: "min-content",
   },
 }));
 
