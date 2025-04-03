@@ -96,7 +96,6 @@ export const AddGroupForm = ({
 
   const onMockRowClick = (mock: IMockResponse) => {
     setSelectedMock(mock);
-    setSelectedGroup(undefined);
   };
 
   const onSubmit = (values: IMockGroup) => {
