@@ -15,7 +15,7 @@ interface IImportData {
 export const ImportButton = () => {
   const { store, setStoreProperties, setSelectedMock } = useChromeStore(
     useMockStoreSelector,
-    shallow
+    shallow,
   );
   const tab = useGlobalStore((state) => state.meta.tab);
 
@@ -23,9 +23,8 @@ export const ImportButton = () => {
     const file = eventInput.target.files?.[0];
     const reader = new FileReader();
 
-    reader.onload = async (event) => {
+    reader.onload = async () => {
       const content = reader.result;
-      let isImportingGroups = false;
 
       if (typeof content !== "string") {
         return;
@@ -42,7 +41,6 @@ export const ImportButton = () => {
 
         if (groups) {
           updatedStore = storeActions.addGroups(updatedStore, groups, true);
-          isImportingGroups = true;
         }
 
         const properties = await storeActions.updateStoreInDB(updatedStore);
@@ -52,18 +50,14 @@ export const ImportButton = () => {
 
         notifications.show({
           title: "Imported successfully.",
-          message: `${
-            isImportingGroups ? "Groups" : "Mocks"
-          } has been imported.`,
+          message: `Data has been imported.`,
         });
 
         eventInput.target.value = "";
       } catch (error) {
         notifications.show({
-          title: `Cannot import ${isImportingGroups ? "groups" : "mocks"}.`,
-          message: `Something went wrong, unable to import ${
-            isImportingGroups ? "groups" : "mocks"
-          }.`,
+          title: `Cannot import data.`,
+          message: `Something went wrong, unable to import data.`,
           color: "red",
         });
       }
