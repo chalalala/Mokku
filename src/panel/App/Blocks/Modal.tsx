@@ -23,11 +23,18 @@ const useStyles = createStyles((theme) => ({
     background: "white",
   },
   modal: {
+    transform: "translateX(0)",
+    transition: "transform 0.15s ease-in-out",
+
     [`@media (max-width: ${theme.breakpoints.md})`]: {
       position: "fixed",
       top: 0,
       right: 0,
       height: "100vh",
+    },
+
+    "@starting-style": {
+      transform: "translateX(100%)",
     },
   },
 }));
