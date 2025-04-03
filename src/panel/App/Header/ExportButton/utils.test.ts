@@ -33,7 +33,6 @@ describe("getExportData", () => {
       id: "1",
       mocksIds: [mock.id],
       name: "Group 1",
-      createdOn: 1738829673766,
     },
   ];
 
@@ -51,7 +50,7 @@ describe("getExportData", () => {
     expect(
       getExportData({
         selectedMocks: [mock, mock],
-      })
+      }),
     ).toEqual({
       mocks: [mock],
     });
@@ -62,7 +61,7 @@ describe("getExportData", () => {
       getExportData({
         selectedGroups,
         mocks,
-      })
+      }),
     ).toEqual({
       mocks: [mock],
       groups: selectedGroups,
@@ -80,7 +79,7 @@ describe("getExportData", () => {
       getExportData({
         selectedGroups: groups,
         mocks,
-      })
+      }),
     ).toEqual({
       groups,
     });
@@ -92,7 +91,7 @@ describe("getExportData", () => {
         selectedGroups,
         selectedMocks: mocks,
         mocks,
-      })
+      }),
     ).toEqual({
       mocks: mocks,
       groups: selectedGroups,
