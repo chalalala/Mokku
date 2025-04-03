@@ -41,7 +41,15 @@ export const Header = () => {
 
   const onTabChange = (value: ViewEnum) => {
     setView(value);
+
+    // clear selection of checkboxes
     resetSelection();
+
+    // close mock modal
+    setSelectedMock(undefined);
+
+    // close group modal
+    setSelectedGroup(undefined);
   };
 
   return (

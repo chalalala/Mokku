@@ -21,17 +21,20 @@ const useStyles = createStyles((theme) => ({
     boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
     zIndex: 1000,
     background: "white",
-
-    'theme.fn.smallerThan("md")': {
-      position: "relative",
-    },
   },
   modal: {
-    'theme.fn.smallerThan("md")': {
-      position: "absolute",
-      inset: 0,
-      height: "100%",
-      width: "100%",
+    transform: "translateX(0)",
+    transition: "transform 0.15s ease-in-out",
+
+    [`@media (max-width: ${theme.breakpoints.md})`]: {
+      position: "fixed",
+      top: 0,
+      right: 0,
+      height: "100vh",
+    },
+
+    "@starting-style": {
+      transform: "translateX(100%)",
     },
   },
 }));
@@ -86,7 +89,7 @@ export const Modal = () => {
       {order.map((o, idx) => (
         <Flex
           key={o}
-          className={classes.wrapper}
+          className={classes.modal}
           style={{ zIndex: order.length - idx }}
         >
           {componentOrderMap[o]}
