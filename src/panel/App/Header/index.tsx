@@ -9,6 +9,7 @@ import {
   ViewEnum,
   useGlobalStoreState,
   useMockStoreSelector,
+  useLogStore,
 } from "../store";
 import { ThemeButton } from "./ThemeButton";
 import { RefreshButton } from "./RefreshButton";
@@ -35,6 +36,7 @@ export const Header = () => {
   const { setSelectedMock, setSelectedGroup } = useChromeStore(
     useMockStoreSelector,
   );
+  const setSelectedLog = useLogStore((state) => state.setSelectedLog);
   const { resetSelection } = useSelectionStore();
 
   const [showSupportUs, setShowSupportUs] = useState(false);
@@ -50,6 +52,9 @@ export const Header = () => {
 
     // close group modal
     setSelectedGroup(undefined);
+
+    // close log modal
+    setSelectedLog(undefined);
   };
 
   return (
