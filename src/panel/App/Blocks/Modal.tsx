@@ -21,6 +21,7 @@ const useStyles = createStyles((theme) => ({
     boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
     zIndex: 1000,
     background: "white",
+    isolation: "isolate",
   },
   modal: {
     transform: "translateX(0)",
