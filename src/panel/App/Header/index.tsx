@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { shallow } from "zustand/shallow";
-import { Tabs, Flex, Input, Button } from "@mantine/core";
+import { Tabs, Flex, Input, Button, Select } from "@mantine/core";
 import { MdAdd } from "react-icons/md";
 import { TbSearch } from "react-icons/tb";
 import {
@@ -10,6 +10,7 @@ import {
   useGlobalStoreState,
   useMockStoreSelector,
   useLogStore,
+  FilterEnum,
 } from "../store";
 import { ThemeButton } from "./ThemeButton";
 import { RefreshButton } from "./RefreshButton";
@@ -26,19 +27,24 @@ const viewSelector = (state: useGlobalStoreState) => ({
   setView: state.setView,
   search: state.search,
   setSearch: state.setSearch,
+  filter: state.filter,
+  setFilter: state.setFilter,
 });
 
 export const Header = () => {
-  const { view, setView, search, setSearch } = useGlobalStore(
-    viewSelector,
-    shallow,
-  );
+  const {
+    view,
+    setView,
+    search,
+    setSearch,
+    filter,
+    setFilter,
+  } = useGlobalStore(viewSelector, shallow);
   const { setSelectedMock, setSelectedGroup } = useChromeStore(
     useMockStoreSelector,
   );
   const setSelectedLog = useLogStore((state) => state.setSelectedLog);
   const { resetSelection } = useSelectionStore();
-
   const [showSupportUs, setShowSupportUs] = useState(false);
 
   const onTabChange = (value: ViewEnum) => {
@@ -91,6 +97,21 @@ export const Header = () => {
                 size="xs"
                 defaultValue={search}
                 onChange={(event) => setSearch(event.target.value)}
+              />
+              <Select
+                size="xs"
+                defaultValue={filter}
+                onChange={(value) => {
+                  if (value) {
+                    setFilter(value);
+                  }
+                }}
+                data={[
+                  { value: FilterEnum.ALL, label: "All" },
+                  { value: FilterEnum.ACTIVE, label: "Active" },
+                  { value: FilterEnum.INACTIVE, label: "Inactive" },
+                ]}
+                wrapperProps={{ style: { width: "90px" } }}
               />
               <RecordButton />
               {view === "LOGS" ? <ClearButton /> : null}

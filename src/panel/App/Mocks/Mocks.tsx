@@ -2,7 +2,12 @@ import React, { useCallback, useMemo } from "react";
 import { ActionIcon, Checkbox, Flex, Switch } from "@mantine/core";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
 import { IMockResponse } from "@mokku/types";
-import { useGlobalStore, useChromeStore, useMockStoreSelector } from "../store";
+import {
+  useGlobalStore,
+  useChromeStore,
+  useMockStoreSelector,
+  FilterEnum,
+} from "../store";
 import { shallow } from "zustand/shallow";
 import {
   MdDeleteOutline,
@@ -146,7 +151,7 @@ const getSchema = ({
 export const Mocks = () => {
   const { store, selectedMock, setSelectedMock } = useChromeStore(
     useMockStoreSelector,
-    shallow
+    shallow,
   );
   const {
     selectedMocks: selectedMocksForAction,
@@ -154,12 +159,13 @@ export const Mocks = () => {
   } = useSelectionStore();
 
   const search = useGlobalStore((state) => state.search).toLowerCase();
+  const filter = useGlobalStore((state) => state.filter);
 
   const { deleteMock, duplicateMock, toggleMock, editMock } = useMockActions();
 
   const isSelectedAll = useMemo(
     () => selectedMocksForAction.length === store.mocks.length,
-    [selectedMocksForAction, store.mocks]
+    [selectedMocksForAction, store.mocks],
   );
 
   const toggleMockSelection = useCallback(
@@ -168,18 +174,18 @@ export const Mocks = () => {
         setSelectedMocksForAction([...selectedMocksForAction, mock]);
       } else {
         setSelectedMocksForAction(
-          selectedMocksForAction.filter((item) => item.id !== mock.id)
+          selectedMocksForAction.filter((item) => item.id !== mock.id),
         );
       }
     },
-    [selectedMocksForAction]
+    [selectedMocksForAction],
   );
 
   const toggleAllMockSelection = useCallback(
     (isChecked: boolean) => {
       setSelectedMocksForAction(isChecked ? store.mocks : []);
     },
-    [store.mocks]
+    [store.mocks],
   );
 
   const schema = getSchema({
@@ -193,13 +199,28 @@ export const Mocks = () => {
     editMock,
   });
 
-  const filteredMocks = store.mocks.filter(
-    (mock) =>
-      (mock?.name || "").toLowerCase().includes(search) ||
-      (mock?.url || "").toLowerCase().includes(search) ||
-      (mock?.method || "").toLowerCase().includes(search) ||
-      (mock?.status || "").toString().includes(search)
-  );
+  const filteredMocks = useMemo(() => {
+    if (!search && filter === FilterEnum.ALL) {
+      return store.mocks;
+    }
+
+    return store.mocks.filter((mock) => {
+      if (filter === FilterEnum.ACTIVE && !mock.active) {
+        return false;
+      }
+
+      if (filter === FilterEnum.INACTIVE && mock.active) {
+        return false;
+      }
+
+      return (
+        (mock?.name || "").toLowerCase().includes(search) ||
+        (mock?.url || "").toLowerCase().includes(search) ||
+        (mock?.method || "").toLowerCase().includes(search) ||
+        (mock?.status || "").toString().includes(search)
+      );
+    });
+  }, [store.mocks, search, filter]);
 
   if (store.mocks.length === 0) {
     return (

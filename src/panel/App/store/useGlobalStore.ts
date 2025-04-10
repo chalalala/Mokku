@@ -6,11 +6,19 @@ export enum ViewEnum {
   GROUPS = "GROUPS",
 }
 
+export const enum FilterEnum {
+  ALL = "all",
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+}
+
 export type useGlobalStoreState = {
   view: `${ViewEnum}`;
   setView: (view: ViewEnum) => void;
   search: string;
   setSearch: (search: string) => void;
+  filter: string;
+  setFilter: (filter: string) => void;
   recording: boolean;
   toggleRecording: () => void;
   meta: {
@@ -35,5 +43,7 @@ export const useGlobalStore = create<useGlobalStoreState>((set, get) => ({
     host: "",
     storeKey: "",
   },
+  filter: FilterEnum.ALL,
+  setFilter: (filter: string) => set({ filter }),
   setMeta: (meta) => set({ meta: meta }),
 }));
