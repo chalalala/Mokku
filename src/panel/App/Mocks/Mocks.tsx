@@ -205,11 +205,11 @@ export const Mocks = () => {
     }
 
     return store.mocks.filter((mock) => {
-      if (filter === FilterEnum.ACTIVE && !mock.active) {
+      if (filter === FilterEnum.ACTIVE && !mock?.active) {
         return false;
       }
 
-      if (filter === FilterEnum.INACTIVE && mock.active) {
+      if (filter === FilterEnum.INACTIVE && mock?.active) {
         return false;
       }
 
