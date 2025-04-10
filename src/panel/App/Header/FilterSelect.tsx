@@ -1,5 +1,5 @@
 import { Select } from "@mantine/core";
-import { FilterEnum, useGlobalStore, useGlobalStoreState } from "@mokku/store";
+import { FilterEnum, useGlobalStore, useGlobalStoreState } from "../store";
 import React from "react";
 import { shallow } from "zustand/shallow";
 
