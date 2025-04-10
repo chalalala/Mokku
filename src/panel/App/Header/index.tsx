@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { shallow } from "zustand/shallow";
-import { Tabs, Flex, createStyles, Input, Button, Select } from "@mantine/core";
+import { Tabs, Flex, Input, Button } from "@mantine/core";
 import { MdAdd } from "react-icons/md";
 import { TbSearch } from "react-icons/tb";
 import {
@@ -8,7 +8,6 @@ import {
   useGlobalStore,
   ViewEnum,
   useGlobalStoreState,
-  FilterEnum,
 } from "../store";
 import { ThemeButton } from "./ThemeButton";
 import { RefreshButton } from "./RefreshButton";
@@ -18,25 +17,20 @@ import { SwitchButton } from "./SwitchButton";
 import { SupportUs } from "./SupportUs";
 import { ExportButton } from "./ExportButton";
 import { ImportButton } from "./ImportButton";
+import { FilterSelect } from "./FilterSelect";
 
 const viewSelector = (state: useGlobalStoreState) => ({
   view: state.view,
   setView: state.setView,
   search: state.search,
   setSearch: state.setSearch,
-  filter: state.filter,
-  setFilter: state.setFilter,
 });
 
 export const Header = () => {
-  const {
-    view,
-    setView,
-    search,
-    setSearch,
-    filter,
-    setFilter,
-  } = useGlobalStore(viewSelector, shallow);
+  const { view, setView, search, setSearch } = useGlobalStore(
+    viewSelector,
+    shallow,
+  );
   const setSelectedMock = useChromeStore((state) => state.setSelectedMock);
   const [showSupportUs, setShowSupportUs] = useState(false);
 
@@ -63,21 +57,7 @@ export const Header = () => {
                 defaultValue={search}
                 onChange={(event) => setSearch(event.target.value)}
               />
-              <Select
-                size="xs"
-                defaultValue={filter}
-                onChange={(value) => {
-                  if (value) {
-                    setFilter(value);
-                  }
-                }}
-                data={[
-                  { value: FilterEnum.ALL, label: "All" },
-                  { value: FilterEnum.ACTIVE, label: "Active" },
-                  { value: FilterEnum.INACTIVE, label: "Inactive" },
-                ]}
-                wrapperProps={{ style: { width: "90px" } }}
-              />
+              {view === ViewEnum.MOCKS ? <FilterSelect /> : null}
               <RecordButton />
               {view === "LOGS" ? <ClearButton /> : null}
             </Flex>
