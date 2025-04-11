@@ -146,7 +146,7 @@ const getSchema = ({
 export const Mocks = () => {
   const { store, selectedMock, setSelectedMock } = useChromeStore(
     useMockStoreSelector,
-    shallow
+    shallow,
   );
   const {
     selectedMocks: selectedMocksForAction,
@@ -159,7 +159,7 @@ export const Mocks = () => {
 
   const isSelectedAll = useMemo(
     () => selectedMocksForAction.length === store.mocks.length,
-    [selectedMocksForAction, store.mocks]
+    [selectedMocksForAction, store.mocks],
   );
 
   const toggleMockSelection = useCallback(
@@ -168,18 +168,18 @@ export const Mocks = () => {
         setSelectedMocksForAction([...selectedMocksForAction, mock]);
       } else {
         setSelectedMocksForAction(
-          selectedMocksForAction.filter((item) => item.id !== mock.id)
+          selectedMocksForAction.filter((item) => item.id !== mock.id),
         );
       }
     },
-    [selectedMocksForAction]
+    [selectedMocksForAction],
   );
 
   const toggleAllMockSelection = useCallback(
     (isChecked: boolean) => {
       setSelectedMocksForAction(isChecked ? store.mocks : []);
     },
-    [store.mocks]
+    [store.mocks],
   );
 
   const schema = getSchema({
@@ -198,7 +198,7 @@ export const Mocks = () => {
       (mock?.name || "").toLowerCase().includes(search) ||
       (mock?.url || "").toLowerCase().includes(search) ||
       (mock?.method || "").toLowerCase().includes(search) ||
-      (mock?.status || "").toString().includes(search)
+      (mock?.status || "").toString().includes(search),
   );
 
   if (store.mocks.length === 0) {
