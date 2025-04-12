@@ -9,20 +9,26 @@ import {
   Title,
 } from "@mantine/core";
 import { v4 as uuidv4 } from "uuid";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { SideDrawerHeader } from "../../Blocks/SideDrawer";
 import { useForm } from "@mantine/form";
-import { MdClose } from "react-icons/md";
+import { MdAdd, MdClose } from "react-icons/md";
 import { storeActions } from "../../service/storeActions";
 import { useChromeStoreState } from "../../store/useMockStore";
 import { notifications } from "@mantine/notifications";
 import { useGlobalStore } from "../../store/useGlobalStore";
 import { IMockGroup } from "../../types/mockGroup";
-import { AddGroupListMocks } from "./AddGroup.ListMocks";
+import { ListMocks } from "../ListMocks/ListMocks";
 import { useMockActions } from "../../Mocks/Mocks.action";
 import { IMockResponse } from "@mokku/types";
+import { AddMocksToGroup } from "./AddGroup.AddMocksToGroup";
 
 const useStyles = createStyles((theme) => ({
+  root: {
+    position: "relative",
+    height: "100%",
+    isolation: "isolate",
+  },
   flexGrow: {
     flexGrow: 2,
   },
@@ -43,11 +49,6 @@ const useStyles = createStyles((theme) => ({
   tableWrapper: {
     flex: 1,
     minHeight: 0,
-  },
-  tabs: {
-    flexGrow: 2,
-    display: "flex",
-    flexDirection: "column",
   },
   footer: {
     padding: 12,
@@ -70,7 +71,7 @@ export const AddGroupForm = ({
   | "setStoreProperties"
 >) => {
   const {
-    classes: { flexGrow, wrapper, tableWrapper, footer, card },
+    classes: { root, flexGrow, wrapper, tableWrapper, footer, card },
   } = useStyles();
   const tab = useGlobalStore((state) => state.meta.tab);
   const { toggleMock } = useMockActions();
@@ -82,6 +83,7 @@ export const AddGroupForm = ({
   const [selectedMocksIds, setSelectedMocksIds] = useState<string[]>(
     selectedGroup.mocksIds || [],
   );
+  const [isOpenListMocks, setIsOpenListMocks] = useState(false);
 
   const isNewGroup = !selectedGroup.id;
   const hasSelectedMocks = !!selectedMocksIds.length;
@@ -96,6 +98,14 @@ export const AddGroupForm = ({
 
   const onMockRowClick = (mock: IMockResponse) => {
     setSelectedMock(mock);
+  };
+
+  const onOpenSelectMocks = () => {
+    setIsOpenListMocks(true);
+  };
+
+  const onCloseSelectMocks = () => {
+    setIsOpenListMocks(false);
   };
 
   const onSubmit = (values: IMockGroup) => {
@@ -148,57 +158,88 @@ export const AddGroupForm = ({
       });
   };
 
+  const [selectedMocks, unSelectedMocks] = useMemo(() => {
+    const selected = [];
+    const unSelected = [];
+
+    for (const mock of store.mocks) {
+      if (selectedMocksIds.includes(mock.id)) {
+        selected.push(mock);
+      } else {
+        unSelected.push(mock);
+      }
+    }
+
+    return [selected, unSelected];
+  }, [selectedMocksIds, store.mocks]);
+
   useEffect(() => {
     setSelectedMocksIds(selectedGroup.mocksIds || []);
   }, [selectedGroup]);
 
   return (
-    <form style={{ height: "100%" }} onSubmit={form.onSubmit(onSubmit)}>
-      <Card className={card}>
-        <SideDrawerHeader>
-          <Title order={6}>{isNewGroup ? "Add Group" : "Update Group"}</Title>
-          <MdClose
-            style={{ cursor: "pointer" }}
-            onClick={() => setSelectedGroup()}
-          />
-        </SideDrawerHeader>
-        <Flex direction="column" gap={16} className={wrapper}>
-          <Flex gap={12} align="center">
-            <TextInput
-              required
-              label="Name"
-              placeholder="Goals Success"
-              className={flexGrow}
-              {...form.getInputProps("name")}
+    <div className={root}>
+      <form style={{ height: "100%" }} onSubmit={form.onSubmit(onSubmit)}>
+        <Card className={card}>
+          <SideDrawerHeader>
+            <Title order={6}>{isNewGroup ? "Add Group" : "Update Group"}</Title>
+            <MdClose
+              style={{ cursor: "pointer" }}
+              onClick={() => setSelectedGroup()}
             />
+          </SideDrawerHeader>
+          <Flex direction="column" gap={16} className={wrapper}>
+            <Flex gap={12} align="center">
+              <TextInput
+                required
+                label="Name"
+                placeholder="Goals Success"
+                className={flexGrow}
+                {...form.getInputProps("name")}
+              />
+            </Flex>
+            <Flex gap={12} align="center">
+              <Textarea
+                className={flexGrow}
+                label="Description"
+                placeholder="Success case for goals API"
+                {...form.getInputProps("description")}
+              />
+            </Flex>
+            <Flex direction="column" gap={12} className={tableWrapper}>
+              <Flex justify="space-between" align="center">
+                <Text fw={500} fz="sm">
+                  Mocks
+                </Text>
+
+                <Button
+                  compact
+                  uppercase
+                  variant="subtle"
+                  size="xs"
+                  leftIcon={<MdAdd />}
+                  styles={{
+                    leftIcon: { marginRight: 4 },
+                  }}
+                  onClick={onOpenSelectMocks}
+                >
+                  Add mocks
+                </Button>
+              </Flex>
+
+              <ListMocks
+                shouldShowToggle
+                shouldShowRemoveButton
+                mocks={selectedMocks}
+                emptyDataTitle="No Mocks Selected In This Group."
+                emptyDataDescription="Add at least one mock to group!"
+                onRemoveMock={onRemoveMock}
+                toggleMock={toggleMock}
+                onRowClick={onMockRowClick}
+              />
+            </Flex>
           </Flex>
-          <Flex gap={12} align="center">
-            <Textarea
-              className={flexGrow}
-              label="Description"
-              placeholder="Success case for goals API"
-              {...form.getInputProps("description")}
-            />
-          </Flex>
-          <Flex direction="column" gap={12} className={tableWrapper}>
-            <Text fw={500} fz="sm">
-              Mocks
-            </Text>
-            <AddGroupListMocks
-              store={store}
-              selectedMocks={selectedMocksIds}
-              onAddMock={onAddMock}
-              onRemoveMock={onRemoveMock}
-              toggleMock={toggleMock}
-              onRowClick={onMockRowClick}
-            />
-          </Flex>
-        </Flex>
-        <Flex className={footer} justify="space-between">
-          <Text color="red">
-            {hasSelectedMocks ? "" : "Add at least one mock to group!"}
-          </Text>
-          <Flex justify="flex-end" gap={4}>
+          <Flex className={footer} justify="flex-end" gap={4}>
             <Button
               color="red"
               compact
@@ -206,12 +247,23 @@ export const AddGroupForm = ({
             >
               Close
             </Button>
+
             <Button compact type="submit" disabled={!hasSelectedMocks}>
               {isNewGroup ? "Add Group" : "Update Group"}
             </Button>
           </Flex>
-        </Flex>
-      </Card>
-    </form>
+        </Card>
+      </form>
+
+      {isOpenListMocks ? (
+        <AddMocksToGroup
+          mocks={unSelectedMocks}
+          onAddMock={onAddMock}
+          toggleMock={toggleMock}
+          onRowClick={onMockRowClick}
+          onClose={onCloseSelectMocks}
+        />
+      ) : null}
+    </div>
   );
 };
