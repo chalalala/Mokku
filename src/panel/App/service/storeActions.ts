@@ -59,7 +59,7 @@ export const updateStoreInDB = (store: IStore) => {
       } catch (error) {
         reject(error);
       }
-    }
+    },
   );
 };
 
@@ -112,7 +112,7 @@ export const getURLMapWithStore = (store: IStore) => {
 export const addMocks = (
   oldStore: IStore,
   dirtyNewMock: IMockResponse | IMockResponse[],
-  shouldCheckDuplicated = false
+  shouldCheckDuplicated = false,
 ) => {
   const store = { ...oldStore };
 
@@ -123,13 +123,15 @@ export const addMocks = (
     : [];
 
   for (const mock of newMocks) {
-    if (shouldCheckDuplicated && storedMocksIds.includes(mock.id)) {
-      continue;
-    }
-
     const dynamic = mock.url.includes("(.*)") || mock.url.includes("/:");
-    store.mocks = [...store.mocks, { ...mock, dynamic }];
-    store.totalMocksCreated++;
+
+    if (shouldCheckDuplicated && storedMocksIds.includes(mock.id)) {
+      const existedMockIdx = store.mocks.findIndex((m) => m.id === mock.id);
+      store.mocks.splice(existedMockIdx, 1, { ...mock, dynamic });
+    } else {
+      store.mocks = [...store.mocks, { ...mock, dynamic }];
+      store.totalMocksCreated++;
+    }
   }
 
   return store;
@@ -139,7 +141,7 @@ type PartialMockWithId = { id: IMockResponse["id"] } & Partial<IMockResponse>;
 
 export const updateMocks = (
   oldStore: IStore,
-  dirtyNewMock: PartialMockWithId | Array<PartialMockWithId>
+  dirtyNewMock: PartialMockWithId | Array<PartialMockWithId>,
 ) => {
   const store = { ...oldStore };
 
@@ -169,16 +171,19 @@ export const updateMocks = (
 
 export const deleteMocks = (
   draftStore: IStore,
-  dirtyMockId: string | string[]
+  dirtyMockId: string | string[],
 ) => {
   const mockIdsSet = Array.isArray(dirtyMockId)
     ? new Set(dirtyMockId)
     : new Set([dirtyMockId]);
 
-  const groupObject = draftStore.groups.reduce((acc, group) => {
-    acc[group.id] = group;
-    return acc;
-  }, {} as Record<string, IMockGroup>);
+  const groupObject = draftStore.groups.reduce(
+    (acc, group) => {
+      acc[group.id] = group;
+      return acc;
+    },
+    {} as Record<string, IMockGroup>,
+  );
 
   const mocks = [];
 
@@ -211,7 +216,7 @@ export const deleteMocks = (
 export const addGroups = (
   oldStore: IStore,
   dirtyNewGroup: IMockGroup | IMockGroup[],
-  shouldCheckDuplicated = false
+  shouldCheckDuplicated = false,
 ) => {
   const store = { ...oldStore };
 
@@ -239,7 +244,7 @@ export const addGroups = (
 
 export const updateGroups = (
   oldStore: IStore,
-  dirtyNewGroup: IMockGroup | Array<IMockGroup>
+  dirtyNewGroup: IMockGroup | Array<IMockGroup>,
 ) => {
   const store = { ...oldStore };
 
@@ -270,7 +275,7 @@ export const updateGroups = (
 
 export const deleteGroups = (
   draftStore: IStore,
-  dirtyGroupId: string | string[]
+  dirtyGroupId: string | string[],
 ) => {
   const groupIdsSet = Array.isArray(dirtyGroupId)
     ? new Set(dirtyGroupId)
@@ -299,7 +304,7 @@ export const refreshContentStore = (tabId?: number) => {
       to: "CONTENT",
       type: "NOTIFICATION",
     },
-    tabId
+    tabId,
   );
 };
 
