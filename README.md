@@ -7,6 +7,7 @@
 - Code editor with find and replace box for the mock response body
 - Import/export mocks
 - Toggle all mocks
+- Filter mocks by active status
 
 **❓ Migrate data to this version of extension?**
 
