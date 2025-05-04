@@ -1,13 +1,8 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { ActionIcon, Checkbox, Flex, Switch } from "@mantine/core";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
 import { IMockResponse } from "@mokku/types";
-import {
-  useGlobalStore,
-  useChromeStore,
-  useMockStoreSelector,
-  FilterEnum,
-} from "../store";
+import { useGlobalStore, useChromeStore, useMockStoreSelector } from "../store";
 import { shallow } from "zustand/shallow";
 import {
   MdDeleteOutline,
@@ -18,6 +13,7 @@ import { useMockActions } from "./Mocks.action";
 import { Placeholder } from "../Blocks/Placeholder";
 import { ToggleAll } from "./ToggleAll/ToggleAll";
 import { useMocksSelectionStore } from "../store/useMocksSelectionStore";
+import { filterMocks } from "./utils";
 
 interface GetSchemeProps {
   isSelectedAll: boolean;
@@ -158,7 +154,7 @@ export const Mocks = () => {
     setSelectedMocksForAction,
   } = useMocksSelectionStore();
 
-  const search = useGlobalStore((state) => state.search).toLowerCase();
+  const search = useGlobalStore((state) => state.search);
   const filter = useGlobalStore((state) => state.filter);
 
   const { deleteMock, duplicateMock, toggleMock, editMock } = useMockActions();
@@ -204,7 +200,7 @@ export const Mocks = () => {
   });
 
   const filteredMocks = useMemo(() => {
-    return filteredMocks({
+    return filterMocks({
       mocks: store.mocks,
       search,
       filter,
