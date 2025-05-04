@@ -204,25 +204,10 @@ export const Mocks = () => {
   });
 
   const filteredMocks = useMemo(() => {
-    if (!search && filter === FilterEnum.ALL) {
-      return store.mocks;
-    }
-
-    return store.mocks.filter((mock) => {
-      if (filter === FilterEnum.ACTIVE && !mock?.active) {
-        return false;
-      }
-
-      if (filter === FilterEnum.INACTIVE && mock?.active) {
-        return false;
-      }
-
-      return (
-        (mock?.name || "").toLowerCase().includes(search) ||
-        (mock?.url || "").toLowerCase().includes(search) ||
-        (mock?.method || "").toLowerCase().includes(search) ||
-        (mock?.status || "").toString().includes(search)
-      );
+    return filteredMocks({
+      mocks: store.mocks,
+      search,
+      filter,
     });
   }, [store.mocks, search, filter]);
 
