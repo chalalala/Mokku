@@ -20,6 +20,7 @@ import { SupportUs } from "./SupportUs";
 import { ExportButton } from "./ExportButton";
 import { ImportButton } from "./ImportButton";
 import { useSelectionStore } from "../store/useMocksSelectionStore";
+import { FilterSelect } from "./FilterSelect";
 
 const viewSelector = (state: useGlobalStoreState) => ({
   view: state.view,
@@ -92,6 +93,7 @@ export const Header = () => {
                 defaultValue={search}
                 onChange={(event) => setSearch(event.target.value)}
               />
+              {view === ViewEnum.MOCKS ? <FilterSelect /> : null}
               <RecordButton />
               {view === "LOGS" ? <ClearButton /> : null}
             </Flex>
