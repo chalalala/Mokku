@@ -18,6 +18,7 @@ import { useMockActions } from "./Mocks.action";
 import { Placeholder } from "../Blocks/Placeholder";
 import { ToggleAll } from "./ToggleAll/ToggleAll";
 import { useSelectionStore } from "../store/useMocksSelectionStore";
+import { filterMocks } from "./utils";
 
 interface GetSchemeProps {
   isSelectedAll: boolean;
@@ -158,7 +159,7 @@ export const Mocks = () => {
     setSelectedMocks: setSelectedMocksForAction,
   } = useSelectionStore();
 
-  const search = useGlobalStore((state) => state.search).toLowerCase();
+  const search = useGlobalStore((state) => state.search);
   const filter = useGlobalStore((state) => state.filter);
 
   const { deleteMock, duplicateMock, toggleMock, editMock } = useMockActions();
@@ -200,7 +201,7 @@ export const Mocks = () => {
   });
 
   const filteredMocks = useMemo(() => {
-    return filteredMocks({
+    return filterMocks({
       mocks: store.mocks,
       search,
       filter,

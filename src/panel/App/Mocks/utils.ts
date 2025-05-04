@@ -27,7 +27,7 @@ export const filterMocks = ({
       (mock?.name || "").toLowerCase().includes(search.toLowerCase()) ||
       (mock?.url || "").toLowerCase().includes(search.toLowerCase()) ||
       (mock?.method || "").toLowerCase().includes(search.toLowerCase()) ||
-      (mock?.status || "").toString().includes(search.toLowerCase())
+      (mock?.status || "").toString().includes(search)
     );
   });
 };
