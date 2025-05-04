@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { shallow } from "zustand/shallow";
-import { Tabs, Flex, createStyles, Input, Button } from "@mantine/core";
+import { Tabs, Flex, Input, Button } from "@mantine/core";
 import { MdAdd } from "react-icons/md";
 import { TbSearch } from "react-icons/tb";
 import {
@@ -17,6 +17,7 @@ import { SwitchButton } from "./SwitchButton";
 import { SupportUs } from "./SupportUs";
 import { ExportButton } from "./ExportButton";
 import { ImportButton } from "./ImportButton";
+import { FilterSelect } from "./FilterSelect";
 
 const viewSelector = (state: useGlobalStoreState) => ({
   view: state.view,
@@ -56,6 +57,7 @@ export const Header = () => {
                 defaultValue={search}
                 onChange={(event) => setSearch(event.target.value)}
               />
+              {view === ViewEnum.MOCKS ? <FilterSelect /> : null}
               <RecordButton />
               {view === "LOGS" ? <ClearButton /> : null}
             </Flex>

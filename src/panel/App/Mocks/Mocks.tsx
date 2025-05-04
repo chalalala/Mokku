@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { ActionIcon, Checkbox, Flex, Switch } from "@mantine/core";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
 import { IMockResponse } from "@mokku/types";
@@ -13,6 +13,7 @@ import { useMockActions } from "./Mocks.action";
 import { Placeholder } from "../Blocks/Placeholder";
 import { ToggleAll } from "./ToggleAll/ToggleAll";
 import { useMocksSelectionStore } from "../store/useMocksSelectionStore";
+import { filterMocks } from "./utils";
 
 interface GetSchemeProps {
   isSelectedAll: boolean;
@@ -148,10 +149,13 @@ export const Mocks = () => {
     useMockStoreSelector,
     shallow,
   );
-  const { selectedMocksForAction, setSelectedMocksForAction } =
-    useMocksSelectionStore();
+  const {
+    selectedMocksForAction,
+    setSelectedMocksForAction,
+  } = useMocksSelectionStore();
 
-  const search = useGlobalStore((state) => state.search).toLowerCase();
+  const search = useGlobalStore((state) => state.search);
+  const filter = useGlobalStore((state) => state.filter);
 
   const { deleteMock, duplicateMock, toggleMock, editMock } = useMockActions();
 
@@ -195,13 +199,13 @@ export const Mocks = () => {
     editMock,
   });
 
-  const filteredMocks = store.mocks.filter(
-    (mock) =>
-      (mock?.name || "").toLowerCase().includes(search) ||
-      (mock?.url || "").toLowerCase().includes(search) ||
-      (mock?.method || "").toLowerCase().includes(search) ||
-      (mock?.status || "").toString().includes(search),
-  );
+  const filteredMocks = useMemo(() => {
+    return filterMocks({
+      mocks: store.mocks,
+      search,
+      filter,
+    });
+  }, [store.mocks, search, filter]);
 
   if (store.mocks.length === 0) {
     return (
