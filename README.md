@@ -8,6 +8,7 @@
 - Import/export mocks
 - Toggle all mocks
 - Group of mocks
+- Filter mocks by active status
 
 **❓ Migrate data to this version of extension?**
 
