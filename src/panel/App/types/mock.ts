@@ -1,3 +1,5 @@
+import { IMockGroup } from "./mockGroup";
+
 export type IMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
 export enum MethodEnum {
@@ -37,7 +39,7 @@ export interface ILog {
 }
 
 export interface IMockResponse {
-  method: MethodEnum;
+  method: `${MethodEnum}`;
   createdOn: number;
   url: string;
   status: number;
@@ -49,6 +51,7 @@ export interface IMockResponse {
   dynamic?: boolean;
   active: boolean;
   description: string;
+  groupIds?: string[];
   action?: (req: {
     body: Record<string, any>;
     params: Record<string, any>;
@@ -62,6 +65,7 @@ export interface IStore {
   active: boolean;
   theme: "dark" | "light";
   mocks: IMockResponse[];
+  groups: IMockGroup[];
   totalMocksCreated: number;
   activityInfo: {
     promoted: boolean;
@@ -89,7 +93,7 @@ export interface IURLMap {
 export interface IDynamicURLMap {
   [urlLength: number]: Array<{
     match: (
-      s: string,
+      s: string
     ) => boolean | { path: string; params: Record<string, string> };
     method: string;
     getterKey: string;

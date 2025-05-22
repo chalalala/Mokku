@@ -8,6 +8,8 @@ import {
   useGlobalStore,
   ViewEnum,
   useGlobalStoreState,
+  useMockStoreSelector,
+  useLogStore,
 } from "../store";
 import { ThemeButton } from "./ThemeButton";
 import { RefreshButton } from "./RefreshButton";
@@ -17,6 +19,7 @@ import { SwitchButton } from "./SwitchButton";
 import { SupportUs } from "./SupportUs";
 import { ExportButton } from "./ExportButton";
 import { ImportButton } from "./ImportButton";
+import { useSelectionStore } from "../store/useMocksSelectionStore";
 import { FilterSelect } from "./FilterSelect";
 
 const viewSelector = (state: useGlobalStoreState) => ({
@@ -31,25 +34,58 @@ export const Header = () => {
     viewSelector,
     shallow,
   );
-  const setSelectedMock = useChromeStore((state) => state.setSelectedMock);
+  const { setSelectedMock, setSelectedGroup } = useChromeStore(
+    useMockStoreSelector,
+  );
+  const setSelectedLog = useLogStore((state) => state.setSelectedLog);
+  const { resetSelection } = useSelectionStore();
+
   const [showSupportUs, setShowSupportUs] = useState(false);
 
+  const onTabChange = (value: ViewEnum) => {
+    setView(value);
+
+    // clear selection of checkboxes
+    resetSelection();
+
+    // close mock modal
+    setSelectedMock(undefined);
+
+    // close group modal
+    setSelectedGroup(undefined);
+
+    // close log modal
+    setSelectedLog(undefined);
+  };
+
   return (
-    <Tabs defaultValue={ViewEnum.MOCKS} value={view} onTabChange={setView}>
+    <Tabs defaultValue={ViewEnum.MOCKS} value={view} onTabChange={onTabChange}>
       <Tabs.List style={{ width: "100%" }}>
         <Flex justify="space-between" align="center" style={{ width: "100%" }}>
           <Flex align="center">
             <Tabs.Tab value={ViewEnum.MOCKS}>Mocks</Tabs.Tab>
+            <Tabs.Tab value={ViewEnum.GROUPS}>Groups</Tabs.Tab>
             <Tabs.Tab value={ViewEnum.LOGS}>Logs</Tabs.Tab>
             <Flex align="center" gap={8}>
-              <Button
-                onClick={() => setSelectedMock({})}
-                leftIcon={<MdAdd />}
-                size="xs"
-                variant="subtle"
-              >
-                Add Mock
-              </Button>
+              {view === ViewEnum.GROUPS ? (
+                <Button
+                  onClick={() => setSelectedGroup({})}
+                  leftIcon={<MdAdd />}
+                  size="xs"
+                  variant="subtle"
+                >
+                  Add Group
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => setSelectedMock({})}
+                  leftIcon={<MdAdd />}
+                  size="xs"
+                  variant="subtle"
+                >
+                  Add Mock
+                </Button>
+              )}
               <Input
                 icon={<TbSearch />}
                 placeholder="Search..."
@@ -70,8 +106,12 @@ export const Header = () => {
             >
               Support Mokku
             </Button>
-            <ExportButton />
-            <ImportButton />
+            {view === ViewEnum.MOCKS || view === ViewEnum.GROUPS ? (
+              <>
+                <ExportButton />
+                <ImportButton />
+              </>
+            ) : null}
             <ThemeButton />
             <RefreshButton />
             <SwitchButton />

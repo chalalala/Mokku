@@ -12,7 +12,7 @@ import {
 import { useMockActions } from "./Mocks.action";
 import { Placeholder } from "../Blocks/Placeholder";
 import { ToggleAll } from "./ToggleAll/ToggleAll";
-import { useMocksSelectionStore } from "../store/useMocksSelectionStore";
+import { useSelectionStore } from "../store/useMocksSelectionStore";
 import { filterMocks } from "./utils";
 
 interface GetSchemeProps {
@@ -150,9 +150,9 @@ export const Mocks = () => {
     shallow,
   );
   const {
-    selectedMocksForAction,
-    setSelectedMocksForAction,
-  } = useMocksSelectionStore();
+    selectedMocks: selectedMocksForAction,
+    setSelectedMocks: setSelectedMocksForAction,
+  } = useSelectionStore();
 
   const search = useGlobalStore((state) => state.search);
   const filter = useGlobalStore((state) => state.filter);
@@ -179,11 +179,7 @@ export const Mocks = () => {
 
   const toggleAllMockSelection = useCallback(
     (isChecked: boolean) => {
-      if (isChecked) {
-        setSelectedMocksForAction(store.mocks);
-      } else {
-        setSelectedMocksForAction([]);
-      }
+      setSelectedMocksForAction(isChecked ? store.mocks : []);
     },
     [store.mocks],
   );

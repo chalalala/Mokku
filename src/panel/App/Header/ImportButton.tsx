@@ -4,8 +4,13 @@ import { ActionIcon } from "@mantine/core";
 import { useChromeStore, useGlobalStore, useMockStoreSelector } from "../store";
 import { shallow } from "zustand/shallow";
 import { storeActions } from "../service/storeActions";
-import { IMockResponse } from "@mokku/types";
+import { IMockGroup, IMockResponse } from "@mokku/types";
 import { notifications } from "@mantine/notifications";
+
+interface IImportData {
+  mocks: IMockResponse[];
+  groups?: IMockGroup[];
+}
 
 export const ImportButton = () => {
   const { store, setStoreProperties, setSelectedMock } = useChromeStore(
@@ -14,11 +19,11 @@ export const ImportButton = () => {
   );
   const tab = useGlobalStore((state) => state.meta.tab);
 
-  const importMocks = (eventInput: ChangeEvent<HTMLInputElement>) => {
+  const importData = (eventInput: ChangeEvent<HTMLInputElement>) => {
     const file = eventInput.target.files?.[0];
     const reader = new FileReader();
 
-    reader.onload = async (event) => {
+    reader.onload = async () => {
       const content = reader.result;
 
       if (typeof content !== "string") {
@@ -26,8 +31,18 @@ export const ImportButton = () => {
       }
 
       try {
-        const parsedContent: IMockResponse[] = JSON.parse(content);
-        const updatedStore = storeActions.addMocks(store, parsedContent);
+        const parsedContent: IImportData = JSON.parse(content);
+        const mocks = parsedContent.mocks;
+        const groups = parsedContent.groups;
+
+        let updatedStore = store;
+
+        updatedStore = storeActions.addMocks(updatedStore, mocks, true);
+
+        if (groups) {
+          updatedStore = storeActions.addGroups(updatedStore, groups, true);
+        }
+
         const properties = await storeActions.updateStoreInDB(updatedStore);
         setStoreProperties(properties);
         storeActions.refreshContentStore(tab.id);
@@ -35,14 +50,14 @@ export const ImportButton = () => {
 
         notifications.show({
           title: "Imported successfully.",
-          message: `Mocks has been imported.`,
+          message: `Data has been imported.`,
         });
 
         eventInput.target.value = "";
       } catch (error) {
         notifications.show({
-          title: `Cannot import mocks.`,
-          message: `Something went wrong, unable to import mocks.`,
+          title: `Cannot import data.`,
+          message: `Something went wrong, unable to import data.`,
           color: "red",
         });
       }
@@ -58,16 +73,10 @@ export const ImportButton = () => {
       component="label"
       variant="outline"
       color={"blue"}
-      title="Import Mocks"
+      title="Import Mocks / Groups"
     >
       <TbDatabaseImport />
-      <input
-        type="file"
-        accept=".json"
-        aria-hidden="true"
-        hidden
-        onChange={importMocks}
-      />
+      <input type="file" accept=".json" hidden onChange={importData} />
     </ActionIcon>
   );
 };

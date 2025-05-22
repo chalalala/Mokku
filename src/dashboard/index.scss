@@ -11,6 +11,10 @@ body,
   width: 100%;
 }
 
+#root {
+  isolation: isolate;
+}
+
 .p-relative {
   position: relative;
 }

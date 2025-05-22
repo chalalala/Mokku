@@ -3,6 +3,7 @@ import { create } from "zustand";
 export enum ViewEnum {
   MOCKS = "MOCKS",
   LOGS = "LOGS",
+  GROUPS = "GROUPS",
 }
 
 export const enum FilterEnum {
@@ -12,7 +13,7 @@ export const enum FilterEnum {
 }
 
 export type useGlobalStoreState = {
-  view: "MOCKS" | "LOGS";
+  view: `${ViewEnum}`;
   setView: (view: ViewEnum) => void;
   search: string;
   setSearch: (search: string) => void;

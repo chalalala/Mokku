@@ -13,7 +13,8 @@ export interface TableWrapperProps<T> {
   schema: TableSchema<T>;
   data: T[];
   onRowClick?: (data: T) => void;
-  selectedRowId?: number | string;
+  selectedRowId?: number | string | (number | string)[];
+  selectedRowClass?: string;
 }
 
 const useStyles = createStyles((theme) => ({
@@ -56,8 +57,17 @@ export const TableWrapper = <T extends unknown & { id: string | number }>({
   data,
   onRowClick,
   selectedRowId,
+  selectedRowClass,
 }: TableWrapperProps<T>) => {
   const { classes } = useStyles();
+
+  const isSelectedRow = (id: number | string) => {
+    if (Array.isArray(selectedRowId)) {
+      return selectedRowId.includes(id);
+    }
+
+    return selectedRowId === id;
+  };
 
   const ths = (
     <tr>
@@ -79,9 +89,9 @@ export const TableWrapper = <T extends unknown & { id: string | number }>({
       onClick={() => {
         onRowClick(row);
       }}
-      className={`${selectedRowId === row.id ? classes.selectedRow : ""} ${
-        classes.rows
-      }`}
+      className={`${
+        isSelectedRow(row.id) ? selectedRowClass || classes.selectedRow : ""
+      } ${onRowClick ? classes.rows : ""}`}
     >
       {schema.map(({ content }, index) => (
         <td className={classes.cell} key={index}>
