@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   Card,
   createStyles,
@@ -87,6 +88,14 @@ export const AddMockForm = ({
   const response = form.values["response"];
   const jsonValid = response ? isJsonValid(response) : true;
 
+  const existingParents = store.mocks.reduce((acc, mock) => {
+    if (mock.parent && !acc.includes(mock.parent)) {
+      acc.push(mock.parent);
+    }
+
+    return acc;
+  }, [] as string[]);
+
   const prettifyResponse = () => {
     try {
       form.setFieldValue(
@@ -105,6 +114,9 @@ export const AddMockForm = ({
         console.log(899, values);
         if (!values.id) {
           values.id = uuidv4();
+        }
+        if (values.parent) {
+          values.parent = values.parent.trim();
         }
         try {
           values.status = parseInt(values.status as any);
@@ -182,6 +194,15 @@ export const AddMockForm = ({
               label="Description"
               placeholder="Success case for goals API"
               {...form.getInputProps("description")}
+            />
+          </Flex>
+          <Flex gap={12} align="center">
+            <Autocomplete
+              label="Parent"
+              data={existingParents}
+              placeholder="Group mocks under a parent name"
+              className={flexGrow}
+              {...form.getInputProps("parent")}
             />
           </Flex>
           <Flex gap={12} align="center">
