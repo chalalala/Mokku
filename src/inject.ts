@@ -8,6 +8,10 @@ import { IEventMessage } from "./interface/message";
 import { IMockResponse, ILog } from "./interface/mock";
 import { getHeaders } from "./services/helper";
 import messageService from "./services/message";
+import {
+  createUrlMapKey,
+  parseQueryParams,
+} from "./services/queryParamsHelper";
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();
@@ -130,11 +134,12 @@ const getLog = (
 
   const separator = requestUrl.indexOf("?");
 
-  const url = separator !== -1 ? requestUrl.substr(0, separator) : requestUrl;
+  const url = separator !== -1 ? requestUrl.slice(0, separator) : requestUrl;
+  const queryParamsObj = parseQueryParams(requestUrl);
   const queryParams =
-    separator !== -1
-      ? JSON.stringify(parse(requestUrl.substr(separator)))
-      : undefined;
+    separator !== -1 ? JSON.stringify(queryParamsObj) : undefined;
+
+  const exactKey = createUrlMapKey(url, queryParamsObj);
 
   try {
     if (typeof requestBody === "object") {
@@ -147,7 +152,7 @@ const getLog = (
 
   return {
     request: {
-      url: request.url,
+      url: exactKey,
       body: requestBody,
       queryParams,
       method: request.method || "GET",
