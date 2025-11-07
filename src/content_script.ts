@@ -5,6 +5,11 @@ import { IEventMessage } from "./interface/message";
 import { IDynamicURLMap, ILog } from "./interface/mock";
 import messageService from "./services/message";
 import { getStore } from "./panel/App/service/storeActions";
+import {
+  createUrlMapKey,
+  matchQueryParams,
+  parseQueryParams,
+} from "./services/queryParamsHelper";
 
 const init = () => {
   let store, urlMap, dynamicUrlMap: IDynamicURLMap;
@@ -15,31 +20,44 @@ const init = () => {
   });
 
   const getMockPath = (url: string, method: string) => {
-    // this will moved to store.ts
-    if (urlMap[url]) {
-      if (urlMap[url][method]) {
-        return urlMap[url][method];
-      }
+    const urlObj = new URL(url);
+    const baseUrl = `${urlObj.origin}${urlObj.pathname}`;
+    const requestParams = parseQueryParams(url);
+
+    // Try exact match with query params
+    const exactKey = createUrlMapKey(baseUrl, requestParams);
+
+    if (urlMap?.[exactKey]?.[method]) {
+      return urlMap[exactKey][method];
     }
 
-    const url1 = url.replace("://", "-");
+    // Try match without query params
+    if (urlMap?.[baseUrl]?.[method]) {
+      return urlMap[baseUrl][method];
+    }
+
+    const url1 = baseUrl.replace("://", "-");
     const key = url1.split("/").length;
     // match all dynamics route
     const stack = dynamicUrlMap[key];
     if (!stack) return [];
 
+    const matchedPaths: string[] = [];
     let i = 0;
     while (i < stack.length) {
-      // there is more to it will be used when
-      // action are introduced
       const s = stack[i];
-      if (s.method === method && !!s.match(url1)) {
-        return [s.getterKey];
+
+      if (
+        s.method === method &&
+        !!s.match(url1) &&
+        matchQueryParams(s.queryParams, requestParams)
+      ) {
+        matchedPaths.push(s.getterKey);
       }
       i++;
     }
 
-    return [];
+    return matchedPaths;
   };
 
   const updateStore = () => {
