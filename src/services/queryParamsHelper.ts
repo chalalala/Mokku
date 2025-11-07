@@ -39,9 +39,12 @@ export const createUrlMapKey = (
   }
 
   try {
-    const queryParamsObj = new URLSearchParams(queryParams);
+    const sortedParams = Object.keys(queryParams)
+      .sort((a, b) => a.localeCompare(b))
+      .map((key) => `${key}=${queryParams[key]}`)
+      .join("&");
 
-    return `${url}?${queryParamsObj.toString()}`;
+    return `${url}?${sortedParams}`;
   } catch {
     return url;
   }
