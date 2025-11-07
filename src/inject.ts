@@ -8,6 +8,10 @@ import { IEventMessage } from "./interface/message";
 import { IMockResponse, ILog } from "./interface/mock";
 import { getHeaders } from "./services/helper";
 import messageService from "./services/message";
+import {
+  createUrlMapKey,
+  parseQueryParams,
+} from "./services/queryParamsHelper";
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();
@@ -24,7 +28,7 @@ messageService.listen("HOOK", (data) => {
 const postMessage = (
   message: IEventMessage["message"],
   type: IEventMessage["type"],
-  ackRequired
+  ackRequired,
 ) => {
   const messageId = ackRequired ? messageIdFactory.getId() : null;
 
@@ -88,7 +92,7 @@ xhook.before(function (request, callback) {
           `%c[Mokku] ${new Date().toLocaleTimeString()}\n🛠️ ${mock.method} ${
             mock.url
           } ${mock.status}`,
-          "color: orange; font-weight: 600;"
+          "color: orange; font-weight: 600;",
         );
       } else {
         callback();
@@ -106,14 +110,15 @@ const getLog = (
       id: string;
     };
   },
-  response?: ILog["response"]
+  response?: ILog["response"],
 ): IEventMessage["message"] => {
   const separator = request.url.indexOf("?");
-  const url = separator !== -1 ? request.url.substr(0, separator) : request.url;
+  const url = separator !== -1 ? request.url.slice(0, separator) : request.url;
+  const queryParamsObj = parseQueryParams(request.url);
   const queryParams =
-    separator !== -1
-      ? JSON.stringify(parse(request.url.substr(separator)))
-      : undefined;
+    separator !== -1 ? JSON.stringify(queryParamsObj) : undefined;
+
+  const exactKey = createUrlMapKey(url, queryParamsObj);
 
   let body = request.body;
 
@@ -128,7 +133,7 @@ const getLog = (
 
   return {
     request: {
-      url: request.url,
+      url: exactKey,
       body,
       queryParams,
       method: request.method || "GET",
