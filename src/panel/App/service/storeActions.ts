@@ -2,6 +2,7 @@ import { match as getMatcher } from "path-to-regexp";
 import { IDynamicURLMap, IMockResponse, IStore, IURLMap } from "@mokku/types";
 import messageService from "./messageService";
 import { IMockGroup } from "../types/mockGroup";
+import { createUrlMapKey } from "../../../services/queryParamsHelper";
 
 const getNetworkMethodMap = () => ({
   GET: [],
@@ -75,6 +76,7 @@ export const getURLMapWithStore = (store: IStore) => {
         getterKey: `mocks[${index}]`,
         method: mock.method,
         url: url,
+        queryParams: mock.queryParams,
         match: getMatcher(url, { decode: window.decodeURIComponent }),
       };
       if (dynamicUrlMap[key]) {
@@ -84,24 +86,29 @@ export const getURLMapWithStore = (store: IStore) => {
       }
       return;
     }
-    if (!urlMap[mock.url]) {
-      urlMap[mock.url] = getNetworkMethodMap();
+
+    const mapKey = createUrlMapKey(mock.url, mock.queryParams);
+
+    if (!urlMap[mapKey]) {
+      urlMap[mapKey] = getNetworkMethodMap();
     }
 
-    if (urlMap[mock.url]) {
-      urlMap[mock.url][mock.method].push(`mocks[${index}]`);
+    if (urlMap[mapKey]) {
+      urlMap[mapKey][mock.method].push(`mocks[${index}]`);
     }
   });
 
   Object.keys(store.collections).forEach((collection) => {
     const mocks = store.collections[collection].mocks;
     mocks.forEach((mock, index) => {
-      if (!urlMap[mock.url]) {
-        urlMap[mock.url] = getNetworkMethodMap();
+      const mapKey = createUrlMapKey(mock.url, mock.queryParams);
+
+      if (!urlMap[mapKey]) {
+        urlMap[mapKey] = getNetworkMethodMap();
       }
 
-      if (urlMap[mock.url]) {
-        urlMap[mock.url][mock.method].push(`${collection}.mocks[${index}]`);
+      if (urlMap[mapKey]) {
+        urlMap[mapKey][mock.method].push(`${collection}.mocks[${index}]`);
       }
     });
   });
@@ -177,13 +184,10 @@ export const deleteMocks = (
     ? new Set(dirtyMockId)
     : new Set([dirtyMockId]);
 
-  const groupObject = draftStore.groups.reduce(
-    (acc, group) => {
-      acc[group.id] = group;
-      return acc;
-    },
-    {} as Record<string, IMockGroup>,
-  );
+  const groupObject = draftStore.groups.reduce((acc, group) => {
+    acc[group.id] = group;
+    return acc;
+  }, {} as Record<string, IMockGroup>);
 
   const mocks = [];
 

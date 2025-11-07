@@ -128,7 +128,7 @@ const getLog = (
 
   return {
     request: {
-      url,
+      url: request.url,
       body,
       queryParams,
       method: request.method || "GET",
