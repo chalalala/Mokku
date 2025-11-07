@@ -58,7 +58,14 @@ Ads free and exclusive features.
 
 ## Support
 
-Developing and maintaing the extenstion requires quite an effort! Cosnider supporting the extention!
+### Author of this version
+
+Developing and maintaing the extenstion requires quite an effort! Consider supporting the extension!
+
+<a href="https://www.paypal.com/paypalme/maidt1212" title="Support Mokku using Paypal" target="_blank"><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-150px.png" border="0" alt="PayPal Logo"></a>
+
+### Original author
+This repository forked from [Mokku](https://github.com/mukuljainx/Mokku) of [mukuljainx](https://github.com/mukuljainx). Please consider supporting the original author as well.
 
 <a href="https://paypal.me/mukuljainx" title="Support Mokku using Paypal" target="_blank"><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-150px.png" border="0" alt="PayPal Logo"></a>
 
@@ -125,5 +132,3 @@ Load `dist` directory. All the files are refreshed without extension reload exce
 ### Built on
 
 [Chitbat Chrome extension starter kit](https://github.com/chibat/chrome-extension-typescript-starter)
-
-<a style="margin-left: 16px" href="https://www.buymeacoffee.com/mukuljainx" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 52px !important;" ></a>
