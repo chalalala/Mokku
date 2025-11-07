@@ -52,6 +52,7 @@ export interface IMockResponse {
   active: boolean;
   description: string;
   groupIds?: string[];
+  queryParams?: Record<string, string>;
   action?: (req: {
     body: Record<string, any>;
     params: Record<string, any>;
@@ -93,10 +94,11 @@ export interface IURLMap {
 export interface IDynamicURLMap {
   [urlLength: number]: Array<{
     match: (
-      s: string
+      s: string,
     ) => boolean | { path: string; params: Record<string, string> };
     method: string;
     getterKey: string;
     url: string;
+    queryParams: Record<string, string>;
   }>;
 }

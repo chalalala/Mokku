@@ -2,6 +2,7 @@
 
 ### ✨ New features on this fork ✨
 
+- Support mock URL with matching query params
 - Sync changes between tabs
 - Logs for mock calls in the console
 - Code editor with find and replace box for the mock response body

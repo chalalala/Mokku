@@ -79,5 +79,6 @@ export interface IDynamicURLMap {
     method: string;
     getterKey: string;
     url: string;
+    queryParams: Record<string, string>;
   }>;
 }
