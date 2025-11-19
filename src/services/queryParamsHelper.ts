@@ -1,11 +1,17 @@
 export const parseQueryParams = (url: string): Record<string, string> => {
   try {
-    const urlObj = new URL(url);
+    const [_, searchParams] = url.split("?");
+
+    if (!searchParams) {
+      return {};
+    }
+
+    const searchParamsObj = new URLSearchParams(searchParams);
     const params: Record<string, string> = {};
 
-    urlObj.searchParams.forEach((value, key) => {
+    for (const [key, value] of searchParamsObj.entries()) {
       params[key] = value;
-    });
+    }
 
     return params;
   } catch {

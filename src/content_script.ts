@@ -20,8 +20,7 @@ const init = () => {
   });
 
   const getMockPath = (url: string, method: string) => {
-    const urlObj = new URL(url);
-    const baseUrl = `${urlObj.origin}${urlObj.pathname}`;
+    const [baseUrl] = url.split("?");
     const requestParams = parseQueryParams(url);
 
     // Try exact match with query params
